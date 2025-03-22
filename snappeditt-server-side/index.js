@@ -110,7 +110,7 @@ app._router.stack.forEach((middleware) => {
 
 // error handling middleware
 if (isProduction) {
-  const frontendPath = path.join(__dirname, "../snappeditt/dist");
+  const frontendPath = path.join(__dirname, "/snappeditt/dist");
   console.log("Serving frontend from:", frontendPath);
   app.use(express.static(frontendPath));
 
