@@ -6,16 +6,15 @@
   "scripts": {
     "dev": "nodemon snappeditt-server-side/index.js",
     "build": "npm install && npm install --prefix snappeditt && npm run build --prefix snappeditt",
-    "start": "nodemon snappeditt-server-side/index.js",
+    "start": "node snappeditt-server-side/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.6",
