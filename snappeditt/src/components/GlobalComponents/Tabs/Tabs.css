@@ -12,7 +12,8 @@
   border: 1px solid #333;
   padding: 15px 0; /* Adjust padding */
   font-size: 15px;
-  font-weight: bold;
+  font-weight: normal;
+  font-family: Audiowide;
   color: #333;
   cursor: pointer;
   position: relative;
@@ -24,7 +25,7 @@
   color: #ff4a44; /* Highlight active tab */
   border-bottom: transparent; /* Add highlight for active tab */
   /* background-color: #fff; */
-  font-weight: 600;
+  font-weight: normal;
 }
 
 tab-button.active::after {

@@ -2,6 +2,7 @@ import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import PackagesWeddingEvents from "@/components/OurServices/WeddingEvents/PackagesWeOffer/PackagesWeddingEvents";
 import WeddingRetouch from "@/components/OurServices/WeddingEvents/AdvanceWeddingServices/AdvanceWeddingServices";
 import AlbumRetouch from "@/components/OurServices/WeddingEvents/AdvanceWeddingServices/AlbumRetouch";
+import WeddingAddons from "@/components/OurServices/WeddingEvents/WeddingAddOnsSerVices/WeddingAddons";
 
 function WeddingEventsView() {
   // Define the content and images for the Header83 component
@@ -43,6 +44,7 @@ function WeddingEventsView() {
         <section>
           <AlbumRetouch />
         </section>
+        <section><WeddingAddons /></section>
       </main>
     </div>
   );

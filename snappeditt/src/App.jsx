@@ -31,6 +31,9 @@ import PaymentForm from "./components/GlobalComponents/PaymentForm/PaymentForm";
 import PrivacyPolicy from "./views/PrivacyPolicy";
 import SignIn from "./components/Authentication/SignIn";
 import SignUp from "./components/Authentication/Signup";
+import NavBar2 from "./components/NavBar/navbarNew";
+
+// import Admin from "./admin/adminRoutes";
 // import RequestCookie from "./components/CookieBanner/CookieBanner";
 
 const ProtectedRoute = ({ children }) => {
@@ -82,7 +85,7 @@ function App() {
         <>
           <ScrollToTopButton />
           <header>
-            <NavBar />
+            <NavBar2 />
           </header>
           <ScrollToTop />
           <Routes>
@@ -99,6 +102,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* <Route path="/admin" element={<Admin />} /> */}
             <Route path="/about-us" element={<AboutView />} />
             <Route path="/services/real-estate" element={<RealStateView />} />
             <Route path="services/:categorySlug/:serviceSlug" element={<ServicePage />} />

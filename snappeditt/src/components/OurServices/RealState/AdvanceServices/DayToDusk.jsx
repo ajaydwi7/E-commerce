@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import ImageComparisonSlider from '@/components/GlobalComponents/ImageComparisonSlider/ImageComparisonSlider';
 import './AdvanceServices.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CircleCheck, CircleX } from "lucide-react";
 
 const DayToDusk = () => {
-
+  const navigate = useNavigate()
 
   const service = {
     title: "Day To Dusk",
@@ -37,6 +37,10 @@ const DayToDusk = () => {
     ]
   };
 
+  const handleAddToCartBtn = (service) => {
+    // Add your cart logic here if needed
+    navigate(service.buttonUrl); // Navigate to the service's URL
+  };
   // State to manage which image slider is currently active
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -71,13 +75,10 @@ const DayToDusk = () => {
           <div className="content-area">
             <h4 className='content-area-title'>{service.title}</h4>
             <p className="price">{service.price}</p>
-            <button className="add-to-cart-btn">
-              <Link to={service.buttonUrl} className='
-              text-black'>Add to Cart</Link></button>
-            <button className="details-btn">
-              <Link to={service.buttonUrl} className='text-primaryBlack'>
-                More Details
-              </Link>
+            <button onClick={() => (handleAddToCartBtn(service))} className="add-to-cart-btn">
+              Add to Cart</button>
+            <button onClick={() => (handleAddToCartBtn(service))} className="details-btn">
+              More Details
             </button>
             <p className="description">{service.description}</p>
             <ul className="features-list">

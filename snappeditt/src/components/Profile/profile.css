@@ -1,11 +1,11 @@
 /* profile.css */
 .profile-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
   background: white;
   border-radius: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(255, 104, 104, 0.541);
   transition: transform 0.3s ease;
 }
 
@@ -16,6 +16,7 @@
 .profile-header {
   display: flex;
   align-items: center;
+  justify-content: space-around;
   gap: 2rem;
   margin-bottom: 3rem;
   padding-bottom: 2rem;
@@ -58,7 +59,10 @@
   color: white;
   transform: rotate(15deg);
 }
-
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
 .profile-actions {
   display: flex;
   gap: 1rem;
@@ -234,5 +238,11 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 548px) {
+  .action-buttons {
+    flex-direction: column;
   }
 }

@@ -7,40 +7,30 @@ const TestimonialSection = () => {
   const testimonials = [
     {
       img: AvatarMan,
-      quote: "The ability to capture responses is a game-changer. If a user gets tired of the sign-up and leaves, that data is still persisted. Additionally, it's great to select between formats.",
-      name: 'Jessie J',
-      role: 'Acme LTD'
+      quote: "I first engaged Snapp Editt for the editing of my real estate photos a few months ago. What has set them apart from other editors is their willingness to communicate, fix any issues and reliability. Very happy with their work.",
+      name: 'Alain',
+      role: 'Real Estate Photographer, Australia'
     },
     {
       img: AvatarMan,
-      quote: "The ability to capture responses is a game-changer. If a user gets tired of the sign-up and leaves, that data is still persisted. Additionally, it's great to select between formats.",
-      name: 'Jessie J',
-      role: 'Acme LTD'
+      quote: "I couldn’t be happier with the service I’ve received from Snapp Editt. They consistently provide exactly what I require - high quality image processing with a quick turnaround time. Highly recommend!",
+      name: 'David',
+      role: 'Architecture and Real Estate Photography, UK'
     },
     {
       img: AvatarMan,
-      quote: "The ability to capture responses is a game-changer. If a user gets tired of the sign-up and leaves, that data is still persisted. Additionally, it's great to select between formats.",
-      name: 'Jessie J',
-      role: 'Acme LTD'
-    },
-    {
-      img: AvatarWoman,
-      quote: "Having the power to capture user feedback is revolutionary. Even if a participant abandons the sign-up process midway, their valuable input remains intact.",
-      name: 'Nick V',
-      role: 'Malika Inc.'
-    },
-    {
-      img: AvatarWoman,
-      quote: "The functionality to capture responses is a true game-changer. Even if a user becomes fatigued during sign-up and abandons the process, their information remains stored.",
-      name: 'Amelia W',
-      role: 'Panda AI'
+      quote: "Snapp Editt have been amazing. I send them basic, unprocessed images of my clients' property, and in a quick time span they return exquisitely retouched images that really improve the look of my real estate listings.",
+      name: 'Russell',
+      role: 'Interior Photographer, USA'
     },
     {
       img: AvatarMan,
-      quote: "The ability to capture responses is a game-changer. If a user gets tired of the sign-up and leaves, that data is still persisted. Additionally, it's great to select between formats.",
-      name: 'Jessie J',
-      role: 'Acme LTD'
-    }
+      quote: "I have been working with Snapp Editt for very long time, I am really happy with the quality of the images, the turnaround time is amazing and they are so reliable. Sean is very approachable, I can't recommend them enough!",
+      name: 'Tiago B',
+      role: 'Fashion Photographer, Australia'
+    },
+
+
   ];
 
   const [active, setActive] = useState(0);
@@ -106,6 +96,7 @@ const TestimonialSection = () => {
               <blockquote className="testimonial-quote">
                 {testimonial.quote}
               </blockquote>
+              <span>{testimonial.name}<br /> {testimonial.role}</span>
               <span className='mobile-author-name'>{testimonial.name}</span>
 
             </div>

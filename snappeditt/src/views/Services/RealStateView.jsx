@@ -6,6 +6,7 @@ import DeClutterObjects from "@/components/OurServices/RealState/AdvanceServices
 import UAVRetouching from "@/components/OurServices/RealState/AdvanceServices/UavRetouching";
 import VirtualStaging from "@/components/OurServices/RealState/AdvanceServices/VirtualStaging";
 import FloorPlan from "@/components/OurServices/RealState/AdvanceServices/FloorPlans";
+import RealEstateAddons from "@/components/OurServices/RealState/ReAddOnServices/RealEstateAddons";
 
 
 
@@ -61,6 +62,7 @@ function RealStateView() {
         <section>
           <FloorPlan />
         </section>
+        <section><RealEstateAddons /></section>
       </main>
     </div>
   );

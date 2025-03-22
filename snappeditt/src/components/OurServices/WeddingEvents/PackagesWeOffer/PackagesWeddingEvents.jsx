@@ -8,21 +8,23 @@ const PackagesWeddingEvents = () => {
     {
       images: [
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-1.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-1.jpg', import.meta.url).href
+          new URL('@/assets/images/Wedding-Events-SHP-Raw-1.jpg', import.meta.url).href,
+          new URL('@/assets/images/Wedding-Events-SHP-Corrected-1.jpg', import.meta.url).href
         ],
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-2.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-2.jpg', import.meta.url).href
+          new URL('@/assets/images/Wedding-Events-SHP-Raw-2.jpg', import.meta.url).href,
+          new URL('@/assets/images/Wedding-Events-SHP-Corrected-2.jpg', import.meta.url).href
         ],
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-3.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-3.jpg', import.meta.url).href
+          new URL('@/assets/images/Wedding-Events-SHP-Raw-3.jpg', import.meta.url).href,
+          new URL('@/assets/images/Wedding-Events-SHP-Corrected-3.jpg', import.meta.url).href
         ]
       ],
       title: 'Perfect Color Balance',
       description: 'Presets which maintainperfect color balancein your images.',
       price: '$0.12/Image',
+      addToCartBtn: '/services/wedding/perfect-color-balance/',
+      moreBtn: '/services/wedding/perfect-color-balance/',
       features: [
         { name: 'Exposure Correction', included: true },
         { name: 'Contrast', included: true },
@@ -43,14 +45,18 @@ const PackagesWeddingEvents = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Wedding-Events-Culling-SHP-Raw-1.jpg', import.meta.url).href,
+        new URL('@images/Wedding-Events-Culling-SHP-Corrected-1.jpg', import.meta.url).href],
+        [new URL('@images/Wedding-Events-Culling-SHP-Raw-2.jpg', import.meta.url).href,
+        new URL('@images/Wedding-Events-Culling-SHP-Corrected-2.jpg', import.meta.url).href],
+        [new URL('@images/Wedding-Events-Culling-SHP-Raw-3.jpg', import.meta.url).href,
+        new URL('@images/Wedding-Events-Culling-SHP-Corrected-3.jpg', import.meta.url).href]
       ],
       title: 'Perfect Color Balance + Culling',
       description: 'Time consuming task made easy with our culling service along with color correction.',
       price: '$0.08 – $0.11/Image',
+      addToCartBtn: '/services/wedding/perfect-color-balance-culling/',
+      moreBtn: '/services/wedding/perfect-color-balance-culling/',
       features: [
         { name: 'Exposure Correction', included: true },
         { name: 'Contrast', included: true },

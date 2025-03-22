@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CircleCheck, CircleX } from "lucide-react";
 
 const FloorPlan = () => {
+  const navigate = useNavigate()
   const service = {
     title: "Floor Plans",
     price: "$10.00 – $18.00/Floor",
     description: "Present your buyers with Floor Plans that engages them more with the property. Our professional and experienced team can create a 2D/3D floor plan for you based on the rough sketch and detailed measurements. Below are the types of floor plans.",
-    addToCartBtn: '/services/real-estate/2d-3d-floor-plans',
+    buttonUrl: '/services/real-estate/2d-3d-floor-plans',
     features: [
       { name: '2D Black and White floor plan', included: true },
       { name: '2D Black and White floor plan with Furniture', included: true },
@@ -30,6 +31,11 @@ const FloorPlan = () => {
         new URL('@/assets/images/Day-to-Dusk-SHP-Raw-3.jpg', import.meta.url).href,
       ]
     ]
+  };
+
+  const handleAddToCartBtn = (service) => {
+    // Add your cart logic here if needed
+    navigate(service.buttonUrl); // Navigate to the service's URL
   };
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -85,11 +91,9 @@ const FloorPlan = () => {
           <div className="content-area">
             <h4 className='content-area-title'>{service.title}</h4>
             <p className="price">{service.price}</p>
-            <button className="add-to-cart-btn"><Link to={service.addToCartBtn} className='
-              text-black'> Add to Cart</Link></button>
-            <button className="details-btn">
-              <Link to={service.addToCartBtn} className='
-              text-black'> More Details</Link></button>
+            <button onClick={() => (handleAddToCartBtn(service))} className="add-to-cart-btn">Add to Cart</button>
+            <button onClick={() => (handleAddToCartBtn(service))} className="details-btn">
+              More Details</button>
             <p className="description">{service.description}</p>
             <ul className="features-list">
               {service.features.map((feature, index) => (

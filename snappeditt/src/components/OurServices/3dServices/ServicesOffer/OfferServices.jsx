@@ -10,13 +10,10 @@ const OfferServices = () => {
     buttonUrl: '/services/3d-services/3d-floor-plan',
     images: [
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-1.jpg', import.meta.url).href
+        new URL('@/assets/images/3D-Floor-Plan-1.jpg', import.meta.url).href
       ],
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-2.jpg', import.meta.url).href
-      ],
-      [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-3.jpg', import.meta.url).href
+        new URL('@/assets/images/3D-Floor-Plan-2.jpg', import.meta.url).href
       ]
     ]
   };

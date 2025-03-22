@@ -8,21 +8,23 @@ const PackagesECommerce = () => {
     {
       images: [
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-1.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-1.jpg', import.meta.url).href
+          new URL('@/assets/images/Product-eComm-SHP-Raw-1.jpg', import.meta.url).href,
+          new URL('@/assets/images/Product-eComm-SHP-Corrected-1.jpg', import.meta.url).href
         ],
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-2.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-2.jpg', import.meta.url).href
+          new URL('@/assets/images/Product-eComm-SHP-Raw-2.jpg', import.meta.url).href,
+          new URL('@/assets/images/Product-eComm-SHP-Corrected-2.png', import.meta.url).href
         ],
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-3.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-3.jpg', import.meta.url).href
+          new URL('@/assets/images/Product-eComm-SHP-Raw-3.jpg', import.meta.url).href,
+          new URL('@/assets/images/Product-eComm-SHP-Corrected-3.png', import.meta.url).href
         ]
       ],
       title: 'Product Retouching',
       description: 'Make your product image presentable for advertisements and E- commerce sites.',
       price: '$1.50 – $4.00/Image',
+      addToCartBtn: '/services/commercial/products-apparel-footwear-furniture/',
+      moreBtn: '/services/commercial/products-apparel-footwear-furniture/',
       features: [
         { name: 'Color Correction', included: true },
         { name: 'Background Fixing and Replacement', included: true },
@@ -35,14 +37,16 @@ const PackagesECommerce = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Jewelery-SHP-Raw-1.jpg', import.meta.url).href,
+        new URL('@images/Jewelery-SHP-Corrected-1.jpg', import.meta.url).href],
+        [new URL('@images/Jewelery-SHP-Raw-2.jpg', import.meta.url).href,
+        new URL('@images/Jewelery-SHP-Corrected-2.jpg', import.meta.url).href]
       ],
       title: 'Jewelry Retouching',
       description: 'Jewelry is expensive. Hence we preserve the rich look.',
       price: '$4.00/Image',
+      addToCartBtn: "/services/commercial/jewelry/",
+      moreBtn: "/services/commercial/jewelry/",
       features: [
         { name: 'Digital Polish of Metal, Diamond or Gemstone', included: true },
         { name: 'Correction or Straightening of irregular Chains (if required)', included: true },
@@ -58,14 +62,14 @@ const PackagesECommerce = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Ghost-Mannequin-SHP-Raw-1.jpg', import.meta.url).href,
+        new URL('@images/Ghost-Mannequin-SHP-Corrected-1.jpg', import.meta.url).href]
       ],
       title: 'Ghost Mannequin',
       description: 'Mannequin is removed cleanly, so that the apparel looks attractive.',
       price: '$4.00/Image',
+      addToCartBtn: "/services/commercial/ghost-mannequin/",
+      moreBtn: "/services/commercial/ghost-mannequin/",
       features: [
         { name: 'Color Correction', included: true },
         { name: 'Background Fixing or Replacement', included: true },
@@ -77,14 +81,15 @@ const PackagesECommerce = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Image-Coming-Soon.jpg', import.meta.url).href,
+        new URL('@images/Image-Coming-Soon.jpg', import.meta.url).href],
+
       ],
       title: 'Composite Retouching',
       description: 'Manipulate an image as per your marketing/ advertisement need.',
       price: '$0.00/Image',
+      addToCartBtn: "/services/commercial/photo-composite/",
+      moreBtn: "/services/commercial/photo-composite/",
       features: [
         { name: 'Composite retouching are used in all forms of photography. They can be a cost-effective way to create images for advertising campaigns, portraits, etc.', included: true }
       ]

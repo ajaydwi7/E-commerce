@@ -20,6 +20,9 @@ const path = require("path");
 const cloudinary = require("cloudinary").v2;
 //import { v2 as cloudinary } from 'cloudinary';
 
+const PORT = process.env.PORT || 3000;
+
+console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
 // connect to mongodb
 
@@ -56,19 +59,28 @@ cloudinary.config({
 //   console.log(URL);
 // })();
 
+const allowedOrigins = [
+  "http://localhost:5173", // Dev Frontend
+  process.env.FRONTEND_URL || "http://localhost:3000", // Production Frontend
+];
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || origin.startsWith("http://localhost:")) {
-        callback(null, true); // Allow any localhost port
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    optionsSuccessStatus: 200,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
   })
 );
+
+// To handle preflight (OPTIONS) requests properly
+app.options("*", cors());
 // initialize middleware
 app.use(bodyParser.json());
 
@@ -76,7 +88,7 @@ app.use(bodyParser.json());
 // app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+const isProduction = process.env.NODE_ENV === "production";
 
 // Routes
 app.use("/api", routes, contactRoutes, freeTrialRoutes);
@@ -88,11 +100,31 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/paypal", paymentRoutes);
 app.use("/api/coupons", couponRoutes);
+
+console.log("Registered Routes:");
+app._router.stack.forEach((middleware) => {
+  if (middleware.route) {
+    console.log(middleware.route.path);
+  }
+});
+
 // error handling middleware
+if (isProduction) {
+  const frontendPath = path.join(__dirname, "../snappeditt/dist");
+  console.log("Serving frontend from:", frontendPath);
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+} else {
+  console.log("Development Mode: Frontend runs on http://localhost:5173");
+}
+
 app.use((err, req, res, next) => {
   res.status(422).send({ error: err.message });
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server is running...");
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
 });

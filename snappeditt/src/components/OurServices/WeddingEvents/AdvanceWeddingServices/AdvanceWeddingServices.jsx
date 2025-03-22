@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import ImageComparisonSlider from '@/components/GlobalComponents/ImageComparisonSlider/ImageComparisonSlider';
 import { CircleCheck, CircleX } from 'lucide-react';
 
 
+
 const WeddingRetouch = () => {
+  const navigate = useNavigate()
   const service = {
     title: "Wedding Retouch",
     price: "$1.00/Image",
     description: "Get your best shots retouched in detailed and add beauty to your work. Just send us your photos and our team of experts will do all the post-production work for you.",
+    buttonUrl: '/services/wedding/wedding-events-retouch',
     features: [
       { name: 'Basic Retouching', included: true },
       { name: 'Blemishes Removal - Basic & Detailed', included: true },
@@ -21,18 +25,15 @@ const WeddingRetouch = () => {
     // Multiple sets of image pairs for the comparison slider
     images: [
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-1.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-1.jpg', import.meta.url).href
-      ],
-      [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-2.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-2.jpg', import.meta.url).href
-      ],
-      [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-3.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-3.jpg', import.meta.url).href
+        new URL('@/assets/images/Album-Retouch-SHP-Raw-1-scaled.jpg', import.meta.url).href,
+        new URL('@/assets/images/Album-Retouch-SHP-Corrected-1-scaled.jpg', import.meta.url).href
       ]
     ]
+  };
+
+  const handleAddToCartBtn = (service) => {
+    // Add your cart logic here if needed
+    navigate(service.buttonUrl); // Navigate to the service's URL
   };
 
   // State to manage which image slider is currently active
@@ -68,8 +69,9 @@ const WeddingRetouch = () => {
           <div className="content-area">
             <h4 className='content-area-title'>{service.title}</h4>
             <p className="price">{service.price}</p>
-            <button className="add-to-cart-btn">Add to Cart</button>
-            <button className="details-btn">More Details</button>
+            <button onClick={() => (handleAddToCartBtn(service))}
+              className="add-to-cart-btn">Add to Cart</button>
+            <button onClick={() => (handleAddToCartBtn(service))} className="details-btn">More Details</button>
             <p className="description">{service.description}</p>
             <ul className="features-list">
               {service.features.map((feature, index) => (

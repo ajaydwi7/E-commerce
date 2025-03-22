@@ -8,85 +8,94 @@ const PackagesPeopleRetouching = () => {
     {
       images: [
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-1.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-1.jpg', import.meta.url).href
+          new URL('@/assets/images/Portrait-SHP-Raw-1.jpg', import.meta.url).href,
+          new URL('@/assets/images/Portrait-SHP-Corrected-1-scaled.jpg', import.meta.url).href
         ],
         [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-2.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-2.jpg', import.meta.url).href
-        ],
-        [
-          new URL('@/assets/images/Real-Estate-Single_exposure-Raw-3.jpg', import.meta.url).href,
-          new URL('@/assets/images/Real-Estate-Single_exposure-Corrected-3.jpg', import.meta.url).href
+          new URL('@/assets/images/Portrait-SHP-Raw-2-scaled.jpg', import.meta.url).href,
+          new URL('@/assets/images/Portrait-SHP-Corrected-2.jpg', import.meta.url).href
         ]
       ],
-      title: 'Product Retouching',
-      description: 'Make your product image presentable for advertisements and E- commerce sites.',
-      price: '$1.50 – $4.00/Image',
+      title: 'Portrait Retouching',
+      description: 'Portraits needs to be professional.So, we keep it natural by taking care of skin tone and stray hair.',
+      price: '$2.25/Image',
+      addToCartBtn: '/services/people/portrait-headshots-studio',
+      moreBtn: '/services/people/portrait-headshots-studio',
+      features: [
+        { name: 'Basic Retouching', included: true },
+        { name: 'Blemish Removal', included: true },
+        { name: 'Stray Hair Removals', included: true },
+        { name: 'Teeth Whitening', included: true },
+        { name: 'Basic Skin Retouching', included: true },
+        { name: 'Dark Circle Remova', included: true },
+        { name: 'Background Removal', included: true },
+        { name: 'Custom Requirements', included: true }
+      ]
+    },
+    {
+      images: [
+        [new URL('@images/Corporate-SPH-Raw-1-scaled.jpg', import.meta.url).href,
+        new URL('@images/Corporate-SPH-Corrected-1-scaled.jpg', import.meta.url).href],
+        [new URL('@images/Corporate-SPH-Raw-2-scaled.jpg', import.meta.url).href,
+        new URL('@images/Corporate-SPH-Corrected-2-scaled.jpg', import.meta.url).href],
+        [new URL('@images/Corporate-SPH-Raw-3-scaled.jpg', import.meta.url).href,
+        new URL('@images/Corporate-SPH-Corrected-3-scaled.jpg', import.meta.url).href]
+      ],
+      title: 'Corporate Headshots',
+      description: 'We mainly focus to make a headshot image ready for corporate use.',
+      price: '$2.00/Image',
+      addToCartBtn: '/services/people/corporate-professional-headshots/',
+      moreBtn: '/services/people/corporate-professional-headshots/',
+      features: [
+        { name: 'Basic Retouching', included: true },
+        { name: 'Basic Blemish Removal', included: true },
+        { name: 'Stray Hair Removal', included: true },
+        { name: 'Teeth Whitening', included: true },
+        { name: 'Basic Skin Retouching', included: true },
+        { name: 'Dark Circle Removal', included: true },
+        { name: 'Background Removal', included: true },
+        { name: 'Custom Requirement', included: true }
+      ]
+    },
+    {
+      images: [
+        [new URL('@images/Pregnacy-SHP-Raw-1.jpg', import.meta.url).href,
+        new URL('@images/Pregnacy-SHP-Corrected-1.jpg', import.meta.url).href],
+        [new URL('@images/Pregnacy-SHP-Raw-2.jpg', import.meta.url).href,
+        new URL('@images/Pregnacy-SHP-Corrected-2.jpg', import.meta.url).href]
+      ],
+      title: 'Pregnancy Retouching',
+      description: 'We maintain your elegant style through gentle edit.',
+      price: '$1.50/Image',
+      addToCartBtn: '/services/people/maternity-pregnancy-retouch/',
+      moreBtn: '/services/people/maternity-pregnancy-retouch/',
       features: [
         { name: 'Color Correction', included: true },
-        { name: 'Background Fixing and Replacement', included: true },
-        { name: 'Dust Removal', included: true },
-        { name: 'Unwanted Object Removal', included: true },
-        { name: 'Creasing, Stains or Scratches fixing', included: true },
-        { name: 'Removing Dark Spots and Flaws', included: true },
-        { name: 'Adding Natural/Drop Shadow/Reflection', included: true }
+        { name: 'Skin Retouching', included: true },
+        { name: 'Creases Removal', included: true },
+        { name: 'Teeth & Eyes Whitening', included: true },
+        { name: 'Shadow and Distraction Remova', included: true },
+        { name: 'Custom Requirement', included: true },
       ]
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Baby-SPH-Raw-3.jpg', import.meta.url).href,
+        new URL('@images/Baby-SPH-Corrected-3.jpg', import.meta.url).href],
+        [new URL('@images/Baby-SPH-Raw-2.jpg', import.meta.url).href,
+        new URL('@images/Baby-SPH-Corrected-2.jpg', import.meta.url).href]
       ],
-      title: 'Jewelry Retouching',
-      description: 'Jewelry is expensive. Hence we preserve the rich look.',
-      price: '$4.00/Image',
+      title: 'Baby Retouching',
+      description: 'It is difficult to shoot babies. Hence we make sure that they glow in the images.',
+      price: '$1.50/Image',
+      addToCartBtn: '/services/people/new-born/',
+      moreBtn: '/services/people/new-born/',
       features: [
-        { name: 'Digital Polish of Metal, Diamond or Gemstone', included: true },
-        { name: 'Correction or Straightening of irregular Chains (if required)', included: true },
-        { name: 'Lighting Correction', included: true },
-        { name: 'Cropping & Straightening', included: true },
-        { name: 'Clipping Path', included: true },
-        { name: 'Background Change/Removal', included: true },
-        { name: 'Unwanted Reflection Removal', included: true },
-        { name: 'Unwanted Dust Removal', included: true },
-        { name: 'Spots & Blemishes Removal', included: true },
-        { name: 'Adding Natural or Drop Shadow/Reflection', included: true }
-      ]
-    },
-    {
-      images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
-      ],
-      title: 'Ghost Mannequin',
-      description: 'Mannequin is removed cleanly, so that the apparel looks attractive.',
-      price: '$4.00/Image',
-      features: [
-        { name: 'Color Correction', included: true },
-        { name: 'Background Fixing or Replacement', included: true },
-        { name: 'Dust Removal', included: true },
-        { name: 'Unwanted Object Removal', included: true },
-        { name: 'Creasing, Stains or Scratches fixing', included: true },
-        { name: 'Adding Natural/Drop Shadow/Reflection', included: true },
-      ]
-    },
-    {
-      images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
-      ],
-      title: 'Composite Retouching',
-      description: 'Manipulate an image as per your marketing/ advertisement need.',
-      price: '$0.00/Image',
-      features: [
-        { name: 'Composite retouching are used in all forms of photography. They can be a cost-effective way to create images for advertising campaigns, portraits, etc.', included: true }
+        { name: 'Basic Retouching and Clean-up', included: true },
+        { name: 'Sharpening and Basic Color Correction (if required)', included: true },
+        { name: 'Dead Skin Removal', included: true },
+        { name: 'Skin Softening', included: true },
+        { name: 'Reduction of Redness on Hands & Feet', included: true }
       ]
     },
     {
@@ -99,8 +108,14 @@ const PackagesPeopleRetouching = () => {
       title: 'School Retouching',
       description: 'Basics of editing gives us the best result for student images.',
       price: '$1.25/Image',
+      addToCartBtn: '/services/people/school/',
+      moreBtn: '/services/people/school/',
       features: [
-        { name: 'Composite retouching are used in all forms of photography. They can be a cost-effective way to create images for advertising campaigns, portraits, etc.', included: true }
+        { name: 'Basic Retouching', included: true },
+        { name: 'Color Correction', included: true },
+        { name: 'Straightening', included: true },
+        { name: 'Crease Removal from Uniform', included: true },
+        { name: 'Whitening of Teeth & Eyes', included: true },
       ]
     },
     {
@@ -113,6 +128,8 @@ const PackagesPeopleRetouching = () => {
       title: 'Sports Retouching',
       description: 'We can help you to complete your banners.',
       price: '$1.25/Image',
+      addToCartBtn: '/services/people/sports/',
+      moreBtn: '/services/people/sports/',
       features: [
         { name: 'Color Correction', included: true },
         { name: 'Straightening', included: true },
@@ -122,14 +139,16 @@ const PackagesPeopleRetouching = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Fashion-SHP-Raw-2.jpg', import.meta.url).href,
+        new URL('@images/Fashion-SHP-Corrected-2.jpg', import.meta.url).href],
+        [new URL('@images/Fashion-SHP-Raw-1.jpg', import.meta.url).href,
+        new URL('@images/Fashion-SHP-Corrected-1.jpg', import.meta.url).href]
       ],
       title: 'Fashion – Glamour Retouching',
       description: 'High end work as per your custom instructions.',
       price: '$10.00/Image',
+      addToCartBtn: '/services/people/fashion-glamour/',
+      moreBtn: '/services/people/fashion-glamour/',
       features: [
         { name: 'Facial Alterations', included: true },
         { name: 'Color Enhancements', included: true },

@@ -4,8 +4,11 @@ import { useParams } from "react-router-dom";
 import { useGlobalContext } from "@/components/GlobalContext/GlobalContext";
 import ServiceForm from "@/components/GlobalComponents/ServiceForm/ServiceForm";
 import ImageComparisonSlider from "@/components/GlobalComponents/ImageComparisonSlider/ImageComparisonSlider";
+import RealEstateAddons from "./ReAddOnServices/RealEstateAddons";
+import WeddingAddons from "../WeddingEvents/WeddingAddOnsSerVices/WeddingAddons";
 import { toast } from "react-toastify";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { Import } from "lucide-react";
 
 const ServicePage = () => {
   const { categorySlug, serviceSlug } = useParams();
@@ -83,7 +86,8 @@ const ServicePage = () => {
     if (service?.variationTypes) {
       const autoSelections = {};
       service.variationTypes.forEach(vt => {
-        if (vt.options.length === 1 && vt.required) {
+        // Auto-select if there's only one option, regardless of required status
+        if (vt.options.length === 1) {
           autoSelections[vt.name] = vt.options[0];
         }
       });
@@ -119,10 +123,15 @@ const ServicePage = () => {
   };
 
   const handleVariationSelect = (variationType, option) => {
-    setSelectedVariations(prev => ({
-      ...prev,
-      [variationType.name]: option,
-    }));
+    setSelectedVariations(prev => {
+      // Toggle selection if clicking the same option
+      if (prev[variationType.name]?._id === option._id) {
+        const newState = { ...prev };
+        delete newState[variationType.name];
+        return newState;
+      }
+      return { ...prev, [variationType.name]: option };
+    });
   };
 
   // In the calculatePrice function, add null checks
@@ -322,27 +331,16 @@ const ServicePage = () => {
                   <h2 className="text-sm font-semibold mr-4">{variationType.name}</h2>
                   <div className="flex flex-wrap gap-4">
                     {(variationType.options || []).map(option => (
-                      variationType.options.length === 1 ? (
-                        <div
-                          key={option._id}
-                          className="py-2 px-4 rounded-sm border border-gray-500 bg-white"
-                        >
-                          {option.name}
-                          <span className="ml-2 text-sm text-gray-500">
-                          </span>
-                        </div>
-                      ) : (
-                        <button
-                          key={option._id}
-                          onClick={() => handleVariationSelect(variationType, option)}
-                          className={`py-2 px-4 rounded-sm border ${selectedVariations[variationType.name]?._id === option._id
-                            ? "border-primaryRed text-black bg-white"
-                            : "border-gray-300 hover:border-gray-500 bg-white"
-                            }`}
-                        >
-                          {option.name}
-                        </button>
-                      )
+                      <button
+                        key={option._id}
+                        onClick={() => handleVariationSelect(variationType, option)}
+                        className={`py-2 px-4 rounded-sm border ${selectedVariations[variationType.name]?._id === option._id
+                          ? "border-primaryRed text-black bg-white"
+                          : "border-gray-300 hover:border-gray-500 bg-white"
+                          } ${variationType.options.length === 1 ? 'cursor-pointer' : ''}`}
+                      >
+                        {option.name}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -400,7 +398,12 @@ const ServicePage = () => {
           </div>
         </div>
       </div>
+      <div className="mt-12">
+        {categorySlug === 'real-estate' && <RealEstateAddons />}
+        {categorySlug === 'wedding-events' && <WeddingAddons />}
+      </div>
     </div>
+
   );
 };
 

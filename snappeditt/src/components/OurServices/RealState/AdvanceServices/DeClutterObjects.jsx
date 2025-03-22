@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import ImageComparisonSlider from '@/components/GlobalComponents/ImageComparisonSlider/ImageComparisonSlider';
 import './AdvanceRight.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CircleCheck, CircleX } from "lucide-react";
 
 
 const DeClutterObjects = () => {
+  const navigate = useNavigate()
+
   const service = {
     title: "De-Clutter Objects",
     price: "$0.00 - $5.00/Image",
     description: "Get rid of unwanted objects from the images virtually to make the property more appealing with our De-Clutter Object service.",
-    addToCartBtn: '/services/real-estate/digital-declutter',
+    buttonUrl: '/services/real-estate/digital-declutter',
     features: [
       { name: 'Wires & Cords Removal', included: true },
       { name: 'Photographers & Tripod Reflection Removal', included: true },
@@ -34,6 +36,11 @@ const DeClutterObjects = () => {
     ]
   };
 
+  const handleAddToCartBtn = (service) => {
+    // Add your cart logic here if needed
+    navigate(service.buttonUrl); // Navigate to the service's URL
+  };
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const changeSlide = (index) => {
@@ -48,11 +55,9 @@ const DeClutterObjects = () => {
         <div className="details-area">
           <h4 className="details-title">{service.title}</h4>
           <p className="price-range">{service.price}</p>
-          <button className="add-to-cart-btn"><Link to={service.addToCartBtn} className='
-              text-black'> Add to Cart</Link></button>
-          <button className="details-btn">
-            <Link to={service.addToCartBtn} className='
-              text-black'> More Details</Link></button>
+          <button onClick={() => (handleAddToCartBtn(service))} className="add-to-cart-btn">Add to Cart</button>
+          <button onClick={() => (handleAddToCartBtn(service))} className="details-btn">
+            More Details</button>
           <p className="service-description">{service.description}</p>
           <ul className="features-list">
             {service.features.map((feature, index) => (

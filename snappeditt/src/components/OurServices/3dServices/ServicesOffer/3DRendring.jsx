@@ -9,15 +9,15 @@ const ThreeDRendring = () => {
     buttonUrl: '/services/3d-services/3d-rendering',
     images: [
       [
-        new URL('@/assets/images/Declutter-SPH-Raw-1.jpg', import.meta.url).href,
+        new URL('@/assets/images/3D-Rendering-1.jpg', import.meta.url).href,
 
       ],
       [
-        new URL('@/assets/images/Declutter-SPH-Raw-2.jpg', import.meta.url).href,
+        new URL('@/assets/images/3D-Rendering-2.jpg', import.meta.url).href,
 
       ],
       [
-        new URL('@/assets/images/Declutter-SPH-Corrected-3.jpg', import.meta.url).href
+        new URL('@/assets/images/3D-Rendering-3.jpg', import.meta.url).href
       ]
     ]
   };
