@@ -21,7 +21,7 @@ const cloudinary = require("cloudinary").v2;
 //import { v2 as cloudinary } from 'cloudinary';
 
 const PORT = process.env.PORT || 3000;
-const __dirname = path.resolve();
+const _dirname = path.resolve();
 
 console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
@@ -91,7 +91,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction) {
-  app.use(express.static(path.join(__dirname, "/snappeditt/dist")));
+  app.use(express.static(path.join(_dirname, "/snappeditt/dist")));
 }
 // Routes
 app.use("/api", routes, contactRoutes, freeTrialRoutes);
@@ -113,7 +113,7 @@ app._router.stack.forEach((middleware) => {
 // error handling middleware
 if (isProduction) {
   app.get("*", (_, res) => {
-    res.sendFile(path.resolve(__dirname, "snappeditt", "dist", "index.html"));
+    res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
   });
 } else {
   console.log("Development Mode: Frontend runs on http://localhost:5173");
