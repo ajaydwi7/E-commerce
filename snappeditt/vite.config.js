@@ -15,15 +15,11 @@ export default defineConfig(({ command, mode }) => {
     },
 
     server: {
-      host: "0.0.0.0",
-      port: process.env.PORT || 5173, // Use available port, default to 5173
-      strictPort: false, // Allows using another available port if 5174 is occupied
       proxy: {
         "/api": {
           target: import.meta.env.VITE_API_URL,
           changeOrigin: true,
           secure: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
         },
       },
       historyApiFallback: true,
