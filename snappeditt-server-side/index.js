@@ -21,6 +21,7 @@ const cloudinary = require("cloudinary").v2;
 //import { v2 as cloudinary } from 'cloudinary';
 
 const PORT = process.env.PORT || 3000;
+const _dirname = path.resolve();
 
 const _dirname = path.resolve();
 
