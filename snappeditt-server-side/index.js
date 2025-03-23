@@ -22,6 +22,8 @@ const cloudinary = require("cloudinary").v2;
 
 const PORT = process.env.PORT || 3000;
 
+const _dirname = path.resolve();
+
 console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
 // connect to mongodb
@@ -110,12 +112,9 @@ app._router.stack.forEach((middleware) => {
 
 // error handling middleware
 if (isProduction) {
-  const frontendPath = path.join(__dirname, "../snappeditt/dist");
-  console.log("Serving frontend from:", frontendPath);
-  app.use(express.static(frontendPath));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
+  app.use(express.static(path.join(_dirname, "/snappeditt/dist")));
+  app.get("*", (_, res) => {
+    res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
   });
 } else {
   console.log("Development Mode: Frontend runs on http://localhost:5173");
