@@ -23,8 +23,6 @@ const cloudinary = require("cloudinary").v2;
 const PORT = process.env.PORT || 3000;
 const _dirname = path.resolve();
 
-const _dirname = path.resolve();
-
 console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
 // connect to mongodb
