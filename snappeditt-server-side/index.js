@@ -61,7 +61,7 @@ cloudinary.config({
 // })();
 
 const allowedOrigins = [
-  "https://snappeditt.onrender.com/", // Dev Frontend
+  "https://snappeditt.onrender.com", // Dev Frontend
   process.env.FRONTEND_URL, // Production Frontend
 ];
 
