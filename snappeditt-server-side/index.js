@@ -113,9 +113,7 @@ app._router.stack.forEach((middleware) => {
 // error handling middleware
 if (isProduction) {
   app.get("*", (_, res) => {
-    res.sendFile(
-      path.resolve(__dirname_dirname, "snappeditt", "dist", "index.html")
-    );
+    res.sendFile(path.resolve(__dirname, "snappeditt", "dist", "index.html"));
   });
 } else {
   console.log("Development Mode: Frontend runs on http://localhost:5173");
