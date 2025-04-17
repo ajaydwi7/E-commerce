@@ -1,4 +1,7 @@
 const FreeTrial = require("../models/freeTrial");
+const Admin = require("../models/Admin");
+const { sendFreeTrialConfirmation } = require("../utils/emailSender");
+const { createNotification } = require("./notificationController");
 
 // @desc    Submit Free Trial Form
 // @route   POST /api/free-trial
@@ -15,13 +18,30 @@ const submitFreeTrial = async (req, res) => {
       images: req.body.images,
       orderName: req.body.orderName,
       imageLinks: req.body.imageLinks,
-      files: req.file ? req.file.path : null,
       description: req.body.description,
     });
 
     // Save to the database
     await freeTrialData.save();
+    // Send confirmation email to user
+    await sendFreeTrialConfirmation(freeTrialData.email, freeTrialData);
+    // Notify admins
+    const admins = await Admin.find({
+      roles: { $in: ["super-admin", "editor"] },
+      notificationPreferences: { $in: ["trial"] },
+    });
 
+    await Promise.all(
+      admins.map(async (admin) => {
+        await createNotification(
+          admin._id,
+          "trial",
+          `New free trial request: ${freeTrialData.service}`, // Changed from ${service}
+          freeTrialData._id,
+          "FreeTrial"
+        );
+      })
+    );
     return res
       .status(201)
       .json({ message: "Free trial form submitted successfully!" });

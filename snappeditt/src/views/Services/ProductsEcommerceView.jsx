@@ -1,3 +1,5 @@
+import React from "react";
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import PackagesECommerce from "@/components/OurServices/ProductsECommerce/PackagesECommerce/PackagesECommerce";
 
@@ -27,6 +29,11 @@ function ProductECommerceView() {
 
   return (
     <div>
+      <SEO
+        title="Snappeditt | E-Commerce Products Retouching Services"
+        description="Products/eCommerce Photo Editing Services. we offer product retouching, clipping path, deep etching, Extraction, Background removal/change, Composite Retouching, Ghost Mannequins, etc."
+        keywords="ecommerce photo editing, product photo editing, retouching, ecommerce photography, product photography"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}

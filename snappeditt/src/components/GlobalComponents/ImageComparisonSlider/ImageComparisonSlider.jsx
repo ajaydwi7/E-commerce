@@ -93,10 +93,10 @@ const ImageComparisonSlider = ({ beforeImage, afterImage }) => {
     <div className="comparison-image-slider" ref={sliderRef}>
       {/* Image Containers */}
       <div className="comparison-image-wrapper">
-        <img src={afterImage} alt="After" className="after-image" />
+        <img src={afterImage} alt="After" className="after-image" loading='lazy' />
       </div>
       <div className="comparison-image-wrapper comparison-overlay" ref={overlayRef}>
-        <img src={beforeImage} alt="Before" className="before-image" />
+        <img src={beforeImage} alt="Before" className="before-image" loading='lazy' />
       </div>
 
       {/* Comparison Line */}

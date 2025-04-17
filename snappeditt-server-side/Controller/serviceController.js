@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const serviceService = require("../services/serviceService");
+const Service = require("../models/Category");
 
 // Add a new category
 exports.addCategory = async (req, res) => {
@@ -91,27 +92,31 @@ exports.getSubcategoryBySlug = async (req, res) => {
 exports.addService = async (req, res) => {
   try {
     const serviceData = req.body;
+    const { categorySlug, subCategorySlug } = req.params;
 
-    // Validate price combinations when variations exist
-    // if (serviceData.variationTypes?.length > 0) {
-    //   if (
-    //     !serviceData.priceCombinations ||
-    //     serviceData.priceCombinations.length === 0
-    //   ) {
-    //     return res.status(400).json({
-    //       message: "Price combinations required when variations exist",
-    //     });
-    //   }
-    // }
+    const category = await Category.findOne({ slug: categorySlug });
+    if (!category)
+      return res.status(404).json({ message: "Category not found" });
 
-    // Rest of the controller logic remains same
-    const updatedSubcategory = await serviceService.addServiceToSubcategory(
-      req.params.categorySlug,
-      req.params.subCategorySlug,
-      serviceData
+    const subcategory = category.subCategories.find(
+      (sub) => sub.slug === subCategorySlug
     );
+    if (!subcategory)
+      return res.status(404).json({ message: "Subcategory not found" });
 
-    res.status(201).json(updatedSubcategory);
+    // Add service to subcategory
+    subcategory.services.push(serviceData);
+    await category.save();
+
+    // Return the new service with proper context
+    const newService = subcategory.services[subcategory.services.length - 1];
+    res.status(201).json({
+      ...newService.toObject(),
+      category: category.name,
+      categorySlug: category.slug,
+      subcategory: subcategory.name,
+      subCategorySlug: subcategory.slug,
+    });
   } catch (error) {
     res
       .status(500)
@@ -119,22 +124,39 @@ exports.addService = async (req, res) => {
   }
 };
 
+// serviceController.js
+// serviceController.js - Update getAllServices
+// serviceController.js - Update getAllServices
+// Modified getAllServices controller
 exports.getAllServices = async (req, res) => {
   try {
-    const categories = await Category.find(); // Fetch all categories
-    const services = [];
+    const categories = await Category.find()
+      .lean()
+      .select("name slug subCategories");
 
-    categories.forEach((category) => {
-      category.subCategories.forEach((subCategory) => {
-        services.push(...subCategory.services); // Collect all services
-      });
-    });
+    // Flatten services with proper category context
+    const services = categories.flatMap((category) =>
+      category.subCategories.flatMap((subCategory) =>
+        subCategory.services.map((service) => ({
+          ...service,
+          _id: service._id.toString(),
+          category: category.name,
+          categorySlug: category.slug,
+          subcategory: subCategory.name,
+          subCategorySlug: subCategory.slug,
+          createdAt: service.createdAt,
+          updatedAt: service.updatedAt,
+        }))
+      )
+    );
 
-    res.status(200).json(services); // Send all services as a response
+    // Return only services array
+    res.status(200).json(services);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching services", error: error.message });
+    res.status(500).json({
+      message: "Error fetching services",
+      error: error.message,
+    });
   }
 };
 
@@ -143,24 +165,24 @@ exports.getServiceBySlug = async (req, res) => {
   const { categorySlug, serviceSlug } = req.params;
 
   try {
-    res.setHeader("Content-Type", "application/json");
-    const category = await Category.findOne({ slug: categorySlug });
-    if (!category) {
-      return res.status(404).json({ error: "Category not found" });
-    }
-
-    let foundService = null;
-    category.subCategories.forEach((subCategory) => {
-      subCategory.services.forEach((service) => {
-        if (service.slug === serviceSlug) {
-          foundService = service;
-        }
-      });
+    const category = await Category.findOne({ slug: categorySlug }).populate({
+      path: "subCategories",
+      populate: {
+        path: "services",
+        match: { slug: serviceSlug },
+      },
     });
 
-    if (!foundService) {
-      return res.status(404).json({ error: "Service not found" });
+    if (!category) return res.status(404).json({ error: "Category not found" });
+
+    let foundService = null;
+    for (const subCategory of category.subCategories) {
+      foundService = subCategory.services.find((s) => s.slug === serviceSlug);
+      if (foundService) break;
     }
+
+    if (!foundService)
+      return res.status(404).json({ error: "Service not found" });
 
     res.status(200).json(foundService);
   } catch (error) {
@@ -265,4 +287,208 @@ exports.updateService = async (req, res) => {
   }
 };
 
-// Other service-related controllers...
+// serviceController.js
+exports.getAllCategoriesWithSubcategories = async (req, res) => {
+  try {
+    const categories = await Category.find().populate({
+      path: "subCategories",
+      select: "name slug description services",
+      populate: {
+        path: "services",
+        select: "name slug basePrice",
+      },
+    });
+    res.status(200).json(categories);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching categories", error: error.message });
+  }
+};
+
+// Create service in specific subcategory
+// exports.addService = async (req, res) => {
+//   try {
+//     const serviceData = req.body;
+
+//     const category = await Category.findOne({ slug: req.params.categorySlug });
+//     if (!category)
+//       return res.status(404).json({ message: "Category not found" });
+
+//     const subcategory = category.subCategories.find(
+//       (s) => s.slug === req.params.subCategorySlug
+//     );
+//     if (!subcategory)
+//       return res.status(404).json({ message: "Subcategory not found" });
+
+//     const newService = subcategory.services.create(serviceData);
+//     subcategory.services.push(newService);
+
+//     await category.save();
+//     res.status(201).json(newService);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error adding service", error: error.message });
+//   }
+// };
+
+exports.getServicesByCategory = async (req, res) => {
+  try {
+    const { categorySlug, subCategorySlug } = req.params;
+    const category = await Category.findOne({ slug: categorySlug }).populate({
+      path: "subCategories",
+      match: { slug: subCategorySlug },
+      populate: {
+        path: "services",
+      },
+    });
+
+    if (!category)
+      return res.status(404).json({ message: "Category not found" });
+
+    const subcategory = category.subCategories.find(
+      (s) => s.slug === subCategorySlug
+    );
+    if (!subcategory)
+      return res.status(404).json({ message: "Subcategory not found" });
+
+    res.status(200).json(subcategory.services);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching services", error: error.message });
+  }
+};
+
+exports.getServiceBySlugs = async (req, res) => {
+  const { categorySlug, subCategorySlug, serviceSlug } = req.params;
+  try {
+    const category = await Category.findOne({ slug: categorySlug });
+    if (!category)
+      return res.status(404).json({ message: "Category not found" });
+
+    const subcategory = category.subCategories.find(
+      (s) => s.slug === subCategorySlug
+    );
+    if (!subcategory)
+      return res.status(404).json({ message: "Subcategory not found" });
+
+    const service = subcategory.services.find((s) => s.slug === serviceSlug);
+    if (!service) return res.status(404).json({ message: "Service not found" });
+
+    res.status(200).json({
+      ...service.toObject(),
+      categorySlug: category.slug,
+      subCategorySlug: subcategory.slug,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching service", error: error.message });
+  }
+};
+
+exports.getOnlyServices = async (req, res) => {
+  try {
+    // Fetch only the required fields without category and subcategory references
+    const services = await Service.find(
+      {},
+      { name: 1, basePrice: 1, featureImage: 1 }
+    );
+
+    if (!services || services.length === 0) {
+      return res.status(404).json({ message: "No services found" });
+    }
+
+    res.status(200).json(services);
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    res.status(500).json({ error: "Failed to fetch services" });
+  }
+};
+
+// serviceController.js
+exports.deleteService = async (req, res) => {
+  try {
+    const { categorySlug, subCategorySlug, serviceSlug } = req.params;
+
+    const updatedCategory = await Category.findOneAndUpdate(
+      { slug: categorySlug },
+      {
+        $pull: {
+          "subCategories.$[subCat].services": { slug: serviceSlug },
+        },
+      },
+      {
+        arrayFilters: [{ "subCat.slug": subCategorySlug }],
+        new: true,
+      }
+    );
+
+    if (!updatedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.status(200).json({ message: "Service deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting service",
+      error: error.message,
+    });
+  }
+};
+
+// Delete category
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { categorySlug } = req.params;
+    const deletedCategory = await Category.findOneAndDelete({
+      slug: categorySlug,
+    });
+
+    if (!deletedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.status(200).json({ message: "Category deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting category",
+      error: error.message,
+    });
+  }
+};
+
+// Delete subcategory
+exports.deleteSubcategory = async (req, res) => {
+  try {
+    const { categorySlug, subCategorySlug } = req.params;
+
+    const updatedCategory = await Category.findOneAndUpdate(
+      { slug: categorySlug },
+      { $pull: { subCategories: { slug: subCategorySlug } } },
+      { new: true }
+    );
+
+    if (!updatedCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Verify subcategory was removed
+    const subExists = updatedCategory.subCategories.some(
+      (sub) => sub.slug === subCategorySlug
+    );
+
+    if (subExists) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+
+    res.status(200).json({ message: "Subcategory deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting subcategory",
+      error: error.message,
+    });
+  }
+};

@@ -11,16 +11,16 @@ const VirtualStaging = () => {
     buttonUrl: '/services/real-estate/virtual-staging',
     images: [
       [
-        new URL('@/assets/images/Declutter-SPH-Raw-1.jpg', import.meta.url).href,
-        new URL('@/assets/images/Declutter-SPH-Corrected-1.jpg', import.meta.url).href
+        new URL('@/assets/images/Virtual-Staging-SPH-Raw-1.jpg', import.meta.url).href,
+        new URL('@/assets/images/Virtual-Staging-SPH-Corrected-1.jpg', import.meta.url).href
       ],
       [
-        new URL('@/assets/images/Declutter-SPH-Raw-2.jpg', import.meta.url).href,
-        new URL('@/assets/images/Declutter-SPH-Corrected-2.jpg', import.meta.url).href
+        new URL('@/assets/images/Virtual-Staging-SPH-Raw-2.jpg', import.meta.url).href,
+        new URL('@/assets/images/Virtual-Staging-SPH-Corrected-2.jpg', import.meta.url).href
       ],
       [
-        new URL('@/assets/images/Declutter-SPH-Corrected-3.jpg', import.meta.url).href,
-        new URL('@/assets/images/Declutter-SPH-Raw-3.jpg', import.meta.url).href
+        new URL('@/assets/images/Virtual-Staging-SPH-Raw-3.jpg', import.meta.url).href,
+        new URL('@/assets/images/Virtual-Staging-SPH-Corrected-3.jpg', import.meta.url).href
       ]
     ]
   };

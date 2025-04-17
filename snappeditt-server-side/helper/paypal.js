@@ -1,20 +1,19 @@
+// Update environment creation
 const paypal = require("@paypal/checkout-server-sdk");
 
-// Creating an environment
-let environment;
-if (process.env.NODE_ENV === "production") {
-  environment = new paypal.core.LiveEnvironment(
+const configureEnvironment = () => {
+  if (process.env.NODE_ENV === "production") {
+    return new paypal.core.LiveEnvironment(
+      process.env.PAYPAL_CLIENT_ID,
+      process.env.PAYPAL_CLIENT_SECRET
+    );
+  }
+  return new paypal.core.SandboxEnvironment(
     process.env.PAYPAL_CLIENT_ID,
     process.env.PAYPAL_CLIENT_SECRET
   );
-} else {
-  environment = new paypal.core.SandboxEnvironment(
-    process.env.PAYPAL_CLIENT_ID,
-    process.env.PAYPAL_CLIENT_SECRET
-  );
-}
+};
 
-// Creating a client
-const client = new paypal.core.PayPalHttpClient(environment);
+const client = new paypal.core.PayPalHttpClient(configureEnvironment());
 
-module.exports = { paypal, client };
+module.exports = { client };

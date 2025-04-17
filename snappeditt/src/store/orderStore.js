@@ -20,7 +20,12 @@ const actions = {
 const reducer = (state, action) => {
   switch (action.type) {
     case actions.FETCH_ORDERS:
-      return { ...state, orders: action.orders, loading: false };
+      return {
+        ...state,
+        orders: action.orders,
+        pagination: action.pagination, // Make sure this is passed
+        loading: false,
+      };
     case actions.PLACE_ORDER:
       return {
         ...state,
@@ -62,21 +67,30 @@ const reducer = (state, action) => {
 const useOrderStore = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchOrders = async (userId) => {
+  const fetchOrders = async (userId, page = 1) => {
     dispatch({ type: actions.SET_LOADING });
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/order/user/${userId}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/order/user/${userId}?page=${page}&limit=5`,
         {
           method: "GET",
           credentials: "include",
         }
       );
       const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-      dispatch({ type: actions.FETCH_ORDERS, orders: data });
+      if (data.error) throw new Error(data.error);
+
+      dispatch({
+        type: actions.FETCH_ORDERS,
+        orders: data.orders,
+        pagination: {
+          currentPage: data.currentPage,
+          totalPages: data.totalPages,
+          totalOrders: data.total,
+        },
+      });
     } catch (error) {
       dispatch({ type: actions.SET_ERROR, error: error.message });
       toast.error("Error fetching orders: " + error.message);

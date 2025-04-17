@@ -1,11 +1,11 @@
 import React from "react";
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import RealEstatePackages from "@/components/OurServices/RealState/PackagesRealState/PackagesRealState";
 import DayToDusk from "@/components/OurServices/RealState/AdvanceServices/DayToDusk";
 import DeClutterObjects from "@/components/OurServices/RealState/AdvanceServices/DeClutterObjects";
 import UAVRetouching from "../../components/OurServices/RealState/AdvanceServices/UAVRetouching";
 import VirtualStaging from "@/components/OurServices/RealState/AdvanceServices/VirtualStaging";
-import FloorPlan from "@/components/OurServices/RealState/AdvanceServices/FloorPlans";
 import RealEstateAddons from "@/components/OurServices/RealState/ReAddOnServices/RealEstateAddons";
 
 
@@ -39,6 +39,11 @@ function RealStateView() {
 
   return (
     <div>
+      <SEO
+        title="Snappeditt | Best Real Estate Photo Editing"
+        description="Real Estate Photo Editing services from basic to advance retouching. We can do any type of editing, Starting from basic HDR, and custom edits exactly matching your studio style."
+        keywords="real estate, photo editing, retouching, real estate photography, property listing"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}
@@ -58,9 +63,6 @@ function RealStateView() {
         </section>
         <section>
           <VirtualStaging />
-        </section>
-        <section>
-          <FloorPlan />
         </section>
         <section><RealEstateAddons /></section>
       </main>

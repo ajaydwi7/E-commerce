@@ -5,16 +5,18 @@ import { FaSave, FaEdit, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa"
 import './profile.css'
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import CountryStateSelector from "../GlobalComponents/CountryStateSelector/CountryStateSelector"
+import { Country, State } from 'country-state-city'
 
 const UserProfile = () => {
   const { state, logout } = useAuth()
   const [user, setUser] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
-  const [editedUser, setEditedUser] = useState({})
-  const [successMessage, setSuccessMessage] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [editedUser, setEditedUser] = useState({ address: {} })
+  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [selectedState, setSelectedState] = useState(null)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
   const navigate = useNavigate()
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -31,11 +33,61 @@ const UserProfile = () => {
         credentials: "include",
       })
       const userData = await response.json()
-      setUser(userData)
-      setEditedUser(userData)
+
+      // Initialize address if missing
+      const userWithAddress = {
+        ...userData,
+        address: userData.address || {}
+      }
+
+      // Set country/state selections
+      if (userWithAddress.address?.isoCode) {
+        const countryData = Country.getCountryByCode(userWithAddress.address.isoCode)
+        setSelectedCountry({
+          value: countryData?.isoCode,
+          label: countryData?.name
+        })
+
+        if (userWithAddress.address.stateCode) {
+          setSelectedState({
+            value: userWithAddress.address.stateCode,
+            label: userWithAddress.address.state
+          })
+        }
+      }
+
+      setUser(userWithAddress)
+      setEditedUser(userWithAddress)
     } catch (error) {
       console.error("Error fetching user data:", error)
     }
+  }
+
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption)
+    setSelectedState(null)
+    setEditedUser(prev => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        country: selectedOption.label,
+        isoCode: selectedOption.value,
+        state: '',
+        stateCode: ''
+      }
+    }))
+  }
+
+  const handleStateChange = (selectedOption) => {
+    setSelectedState(selectedOption)
+    setEditedUser(prev => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        state: selectedOption.label,
+        stateCode: selectedOption.value
+      }
+    }))
   }
 
   const handleSave = async (e) => {
@@ -45,22 +97,24 @@ const UserProfile = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(editedUser),
+        body: JSON.stringify({
+          ...editedUser,
+          address: editedUser.address || {}
+        }),
       })
 
       if (response.ok) {
-        setUser(editedUser)
+        const updatedUser = await response.json()
+        setUser(updatedUser)
+        setEditedUser(updatedUser)
         setIsEditing(false)
-        setSuccessMessage("Profile updated successfully!")
-        setTimeout(() => setSuccessMessage(""), 3000)
+        toast.success("Profile updated successfully!")
       } else {
-        setErrorMessage("Failed to update profile")
-        setTimeout(() => setErrorMessage(""), 3000)
+        toast.error("Failed to update profile")
       }
     } catch (error) {
       console.error("Error updating user data:", error)
-      setErrorMessage("Error updating profile")
-      setTimeout(() => setErrorMessage(""), 3000)
+      toast.error("Error updating profile")
     }
   }
 
@@ -94,9 +148,12 @@ const UserProfile = () => {
       <div className="profile-header">
         <div className="avatar-container">
           <img
-            src={`https://api.dicebear.com/6.x/initials/svg?seed=${user?.username}&backgroundColor=ff0000`}
-            alt="Profile"
+            src={`https://api.dicebear.com/6.x/initials/svg?seed=${user?.firstName}&backgroundColor=ff0000`}
+            alt="user-avatar"
             className="profile-avatar"
+            loading="lazy"
+            width={100}
+            height={100}
           />
           <button className="avatar-edit-btn">
             <FaEdit size={18} />
@@ -125,11 +182,21 @@ const UserProfile = () => {
         <h2>Profile Information</h2>
         <form onSubmit={handleSave}>
           <div className="form-group">
-            <label>Username</label>
+            <label>First Name</label>
             <input
               type="text"
-              value={editedUser.username || ""}
-              onChange={(e) => setEditedUser({ ...editedUser, username: e.target.value })}
+              value={editedUser.firstName || ""}
+              onChange={(e) => setEditedUser({ ...editedUser, firstName: e.target.value })}
+              disabled={!isEditing}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              value={editedUser.lastName || ""}
+              onChange={(e) => setEditedUser({ ...editedUser, lastName: e.target.value })}
               disabled={!isEditing}
             />
           </div>
@@ -139,7 +206,95 @@ const UserProfile = () => {
             <input
               type="email"
               value={editedUser.email || ""}
-              onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
+              disabled
+              className="disabled-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              value={editedUser.phone || ""}
+              onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+              disabled={!isEditing}
+            />
+          </div>
+        </form>
+      </div>
+
+      <div className="form-section">
+        <h2>Address Information</h2>
+        <form onSubmit={handleSave}>
+          <CountryStateSelector
+            country={selectedCountry}
+            state={selectedState}
+            onCountryChange={handleCountryChange}
+            onStateChange={handleStateChange}
+            isEditing={isEditing}
+          />
+
+          <div className="form-group">
+            <label>Street Number</label>
+            <input
+              type="text"
+              value={editedUser.address?.streetNumber || ""}
+              onChange={(e) => setEditedUser({
+                ...editedUser,
+                address: { ...editedUser.address, streetNumber: e.target.value }
+              })}
+              disabled={!isEditing}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Street Name</label>
+            <input
+              type="text"
+              value={editedUser.address?.streetName || ""}
+              onChange={(e) => setEditedUser({
+                ...editedUser,
+                address: { ...editedUser.address, streetName: e.target.value }
+              })}
+              disabled={!isEditing}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Apartment/Unit</label>
+            <input
+              type="text"
+              value={editedUser.address?.apartmentUnit || ""}
+              onChange={(e) => setEditedUser({
+                ...editedUser,
+                address: { ...editedUser.address, apartmentUnit: e.target.value }
+              })}
+              disabled={!isEditing}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>City</label>
+            <input
+              type="text"
+              value={editedUser.address?.city || ""}
+              onChange={(e) => setEditedUser({
+                ...editedUser,
+                address: { ...editedUser.address, city: e.target.value }
+              })}
+              disabled={!isEditing}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Postal Code</label>
+            <input
+              type="text"
+              value={editedUser.address?.postalCode || ""}
+              onChange={(e) => setEditedUser({
+                ...editedUser,
+                address: { ...editedUser.address, postalCode: e.target.value }
+              })}
               disabled={!isEditing}
             />
           </div>
@@ -220,12 +375,9 @@ const UserProfile = () => {
         </div>
         <div className="stat-item">
           <span className="stat-label">Total Orders</span>
-          <span className="stat-value">12</span>
+          <span className="stat-value">{user?.totalOrders || 0}</span>
         </div>
       </div>
-
-      {successMessage && <div className="success-message">{successMessage}</div>}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
   )
 }

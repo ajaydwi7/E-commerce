@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import PackagesWeddingEvents from "@/components/OurServices/WeddingEvents/PackagesWeOffer/PackagesWeddingEvents";
 import WeddingRetouch from "@/components/OurServices/WeddingEvents/AdvanceWeddingServices/AdvanceWeddingServices";
@@ -30,6 +31,11 @@ function WeddingEventsView() {
 
   return (
     <div>
+      <SEO
+        title="Wedding & Events Photo Editing Services​ | Photo Enhancement | SnappEditt"
+        description="Wedding / Events Photo Editing starts from $ 0.12 per image with quick turnaround time of 24-48 hours. Our Expert team guarantees the best wedding/event photography for your listings matching your style. View the list of photo retouching services ⟾ and order online!"
+        keywords="wedding photo editing, events photo editing, retouching, wedding photography, event photography"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}

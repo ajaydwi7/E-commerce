@@ -2,23 +2,35 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-  email: {
-    type: String,
-    required: [true, "Email is required"],
+const UserSchema = new Schema(
+  {
+    firstName: { type: String, required: [true, "First name is required"] },
+    lastName: { type: String, required: [true, "Last name is required"] },
+    phone: { type: String, required: [true, "Phone number is required"] },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+    address: {
+      streetNumber: String,
+      streetName: String,
+      apartmentUnit: String,
+      city: String,
+      state: String,
+      country: String,
+      postalCode: String,
+      isoCode: String, // Country ISO code
+      stateCode: String, // State ISO code
+    },
+    resetToken: String,
+    resetTokenExpiration: Date,
   },
-  password: {
-    type: String,
-    required: [true, "Password is required"],
-  },
-  username: {
-    type: String,
-    required: [true, "Username is required"],
-  },
-  resetToken: String,
-  resetTokenExpiration: Date,
-  createdAt: Date,
-});
+  { timestamps: true }
+);
 
 // Before save encrypt password
 
@@ -41,6 +53,6 @@ UserSchema.statics.login = async function (email, password) {
   return user;
 };
 
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

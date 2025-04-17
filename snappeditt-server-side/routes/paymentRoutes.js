@@ -2,6 +2,7 @@ const express = require("express");
 const { client } = require("../helper/paypal");
 const paypal = require("@paypal/checkout-server-sdk");
 const router = express.Router();
+const ServiceOrder = require("../models/ServiceOrder");
 
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
@@ -107,5 +108,24 @@ router.post(
     }
   })
 );
+
+router.post("/webhook", async (req, res) => {
+  try {
+    const { event_type, resource } = req.body;
+
+    // Update order status on successful payment
+    if (event_type === "PAYMENT.CAPTURE.COMPLETED") {
+      await ServiceOrder.findOneAndUpdate(
+        { paypalOrderId: resource.id },
+        { paymentStatus: "Completed" }
+      );
+    }
+
+    res.status(200).end();
+  } catch (error) {
+    console.error("Webhook error:", error);
+    res.status(500).json({ error: "Webhook processing failed" });
+  }
+});
 
 module.exports = router;

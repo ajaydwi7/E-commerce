@@ -58,15 +58,27 @@ const Packages = ({ tabNames, tabsContent, title }) => {
             {/* Carousel Section */}
             <div className="carousel">
               <div className="carousel-slide">
-                {/* Safely render ImageComparisonSlider */}
-                {images.length > 0 && images[currentSlide]?.length === 2 ? (
-                  <ImageComparisonSlider
-                    key={`${activeTab}-${currentSlide}`}
-                    beforeImage={images[currentSlide][0]}
-                    afterImage={images[currentSlide][1]}
-                  />
+                {images.length > 0 && images[currentSlide] ? (
+                  images[currentSlide].length === 2 ? (
+                    // Show comparison slider if two images exist
+                    <ImageComparisonSlider
+                      key={`${activeTab}-${currentSlide}`}
+                      beforeImage={images[currentSlide][0]}
+                      afterImage={images[currentSlide][1]}
+                    />
+                  ) : images[currentSlide].length === 1 ? (
+                    // Show single image if only one exists
+                    <img
+                      src={images[currentSlide][0]}
+                      alt="Service preview"
+                      className="single-image"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <p>No images available</p>
+                  )
                 ) : (
-                  <p>No images available</p> // Fallback if no images exist
+                  <p>No images available</p>
                 )}
               </div>
 

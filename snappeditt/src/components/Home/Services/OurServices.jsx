@@ -102,7 +102,7 @@ const OurServices = () => {
         { icon: DayToDusk, text: "Day to Dusk" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/real-estate",
+      buttonLink: "/real-estate",
       images: [
         [new URL('@/assets/images/Real-Estate-Manual_Blending-Raw-3.jpg', import.meta.url).href,
         new URL('@/assets/images/Real-Estate-Manual_Blending-Corrected-3.jpg', import.meta.url).href],
@@ -119,7 +119,7 @@ const OurServices = () => {
         { icon: Virtual, text: "3D Rendering" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/3d-services",
+      buttonLink: "/3d-services",
       images: [
         [new URL('@/assets/images/3D-Rendering-P-3.jpg', import.meta.url).href, null],
         [new URL('@/assets/images/3D-Rendering-1.jpg', import.meta.url).href, null
@@ -142,7 +142,7 @@ const OurServices = () => {
         { icon: Dodging, text: "Dodging & Burning" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/wedding-events",
+      buttonLink: "/wedding-events",
       images: [
         [new URL('@/assets/images/Wedding-Events-HP-Raw-1.jpg', import.meta.url).href,
         new URL('@/assets/images/Wedding-Events-HP-Corrected-1.jpg', import.meta.url).href,
@@ -165,7 +165,7 @@ const OurServices = () => {
         { icon: GhostMannequin, text: "Ghost Mannequin" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/products-ecommerce",
+      buttonLink: "/products-ecommerce",
       images: [
         [new URL('@/assets/images/Product-eComm-HP-Raw-1-2048x1365.jpg', import.meta.url).href,
         new URL('@/assets/images/Product-eComm-HP-Corrected-1-2048x1365.jpg', import.meta.url).href,
@@ -188,7 +188,7 @@ const OurServices = () => {
         { icon: Fashion, text: "Fashion Retouching" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/people-retouching",
+      buttonLink: "/people-retouching",
       images: [
         [new URL('@/assets/images/Baby-SPH-Raw-3.jpg', import.meta.url).href,
         new URL('@/assets/images/Baby-SPH-Corrected-3.jpg', import.meta.url).href,
@@ -214,7 +214,7 @@ const OurServices = () => {
         { icon: ClippingPath, text: "CP with Shadows & Reflection" },
       ],
       buttonText: "Check Our Packages",
-      buttonLink: "/services/clipping-path-extraction",
+      buttonLink: "/clipping-path-extraction",
       images: [
         [new URL('@/assets/images/Clipping-Path-HP-RAW-1.jpg', import.meta.url).href,
         new URL('@/assets/images/Clipping-Path-HP-Corrected-1.jpg', import.meta.url).href
@@ -276,7 +276,7 @@ const OurServices = () => {
                       <div className="icon-items">
                         {tabDetails[index].iconItems.map((item, idx) => (
                           <div className="icon-item" key={idx}>
-                            <img src={item.icon} alt={item.text} className="svg-icon" />
+                            <img src={item.icon} alt={item.text} className="svg-icon" loading="lazy" />
                             {item.text}
                           </div>
                         ))}
@@ -303,6 +303,7 @@ const OurServices = () => {
                                 src={tabDetails[index].images[currentSlide][0]}
                                 alt="Service"
                                 className="single-image"
+                                loading="lazy"
                               />
                             )
                           )}
@@ -340,7 +341,7 @@ const OurServices = () => {
               <div className="icon-items">
                 {currentContent.iconItems.map((item, index) => (
                   <div className="icon-item" key={index}>
-                    <img src={item.icon} alt={item.text} className="svg-icon" />
+                    <img src={item.icon} alt={item.text} className="svg-icon" loading="lazy" />
                     {item.text}
                   </div>
                 ))}
@@ -361,6 +362,7 @@ const OurServices = () => {
                         src={currentContent.images[currentSlide][0]}
                         alt="Service Image"
                         className="single-image"
+                        loading="lazy"
                       />
                     ) : (
                       <ImageComparisonSlider

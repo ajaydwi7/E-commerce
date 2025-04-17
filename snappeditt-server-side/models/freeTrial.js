@@ -6,7 +6,14 @@ const FreeTrialSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   service: { type: String, required: true },
-  images: { type: Number, required: true },
+  images: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: Number.isInteger,
+      message: "{VALUE} is not an integer value",
+    },
+  },
   orderName: { type: String, required: true },
   imageLinks: {
     type: String,
@@ -19,8 +26,19 @@ const FreeTrialSchema = new mongoose.Schema({
     },
   },
   description: { type: String, required: false },
-  files: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ["new", "Pending", "Processing", "Completed"],
+    default: "new",
+  },
+  notes: [
+    {
+      text: String,
+      createdAt: { type: Date, default: Date.now },
+      createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+    },
+  ],
 });
 
 module.exports = mongoose.model("FreeTrial", FreeTrialSchema);

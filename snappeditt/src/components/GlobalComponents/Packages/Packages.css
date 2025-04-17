@@ -44,6 +44,12 @@
   object-fit: cover; /* Ensures the image scales properly */
 }
 
+.single-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1rem;
+}
 /* Dot navigation styling - placed at the bottom */
 .dots {
   display: flex;

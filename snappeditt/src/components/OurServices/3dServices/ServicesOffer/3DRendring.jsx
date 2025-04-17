@@ -53,7 +53,7 @@ const ThreeDRendring = () => {
 
         {/* Image Comparison Slider on the Right */}
         <div className="image-slider-wrapper">
-          <img src={service.images[currentSlide][0]} alt="Raw" className="carousel-image" />
+          <img src={service.images[currentSlide][0]} alt="Raw" className="carousel-image" loading='lazy' />
           <FaArrowLeft onClick={prevSlide} className="carousel-control prev" size={30} /> {/* Use arrow icon */}
           <FaArrowRight onClick={nextSlide} className="carousel-control next" size={30} /> {/* Use arrow icon */}
           <div className="dots">

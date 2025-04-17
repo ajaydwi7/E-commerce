@@ -8,9 +8,10 @@ const InfoSection = () => {
         <div className="info-box">
           <h2 className="info-title">Unbreakable <span className='infotitle-text'>Trust</span></h2>
           <p className="info-description">
-            SnappEdit is a Professional Editing/Post Production Studio with a personal touch and consistent results every time. We know the hustle of editing the images after exhausting real estate photo shoots or weddings as we are photographers.
+            SnappEdit is a professional editing and post-production studio that delivers consistent results with a personal touch.<br />
+            We know how time-consuming and draining editing can be after real estate or wedding shoots—that’s where we come in to save your time and boost your productivity.
             <br />
-            Whether you’ve never outsourced post-production in your life or you’re experienced and are looking to find a better alternative, we’ve got this!
+            Whether you're new to outsourcing post-production or looking for a better option, we're here to make it easier for you!
           </p>
         </div>
       </div>

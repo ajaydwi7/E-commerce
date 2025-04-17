@@ -21,7 +21,7 @@ const PackagesWeddingEvents = () => {
         ]
       ],
       title: 'Perfect Color Balance',
-      description: 'Presets which maintainperfect color balancein your images.',
+      description: 'Presets which maintain perfect color balance in your images.',
       price: '$0.12/Image',
       addToCartBtn: '/services/wedding/perfect-color-balance/',
       moreBtn: '/services/wedding/perfect-color-balance/',

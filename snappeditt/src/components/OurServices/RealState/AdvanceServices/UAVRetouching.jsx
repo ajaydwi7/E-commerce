@@ -21,16 +21,16 @@ const UAVRetouching = () => {
     // Multiple sets of image pairs for the comparison slider
     images: [
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-1.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-1.jpg', import.meta.url).href
+        new URL('@/assets/images/UAV-SPH-Raw-1.jpg', import.meta.url).href,
+        new URL('@/assets/images/UAV-SPH-Corrected-1.jpg', import.meta.url).href
       ],
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-2.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-2.jpg', import.meta.url).href
+        new URL('@/assets/images/UAV-SPH-Raw-2.jpg', import.meta.url).href,
+        new URL('@/assets/images/UAV-SPH-Corrected-2.jpg', import.meta.url).href
       ],
       [
-        new URL('@/assets/images/Day-to-Dusk-SHP-Raw-3.jpg', import.meta.url).href,
-        new URL('@/assets/images/Day-to-Dusk-SHP-Corrected-3.jpg', import.meta.url).href
+        new URL('@/assets/images/UAV-SPH-Raw-3.jpg', import.meta.url).href,
+        new URL('@/assets/images/UAV-SPH-Corrected-3.jpg', import.meta.url).href
       ]
     ]
   };

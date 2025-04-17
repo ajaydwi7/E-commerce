@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const Admin = require("../models/Admin");
+const { createNotification } = require("./notificationController");
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -11,8 +13,14 @@ const createToken = (id) => {
 const authController = {
   register: async (req, res) => {
     try {
-      const { email, password, username } = req.body;
-      const user = await User.create({ email, password, username });
+      const { email, password, firstName, lastName, phone } = req.body;
+      const user = await User.create({
+        firstName,
+        lastName,
+        phone,
+        email,
+        password,
+      });
       const token = createToken(user._id);
       res.cookie("userToken", token, {
         httpOnly: true,
@@ -20,6 +28,22 @@ const authController = {
         sameSite: "None",
         secure: true,
       });
+      // Notify admins
+      const admins = await Admin.find({
+        roles: { $in: ["super-admin", "support"] },
+      });
+
+      await Promise.all(
+        admins.map(async (admin) => {
+          await createNotification(
+            admin._id,
+            "user",
+            `New user registered: ${user.email}`,
+            user._id,
+            "User"
+          );
+        })
+      );
       res.status(201).json({
         user: {
           id: user._id,

@@ -1,6 +1,14 @@
 const express = require("express");
 const serviceController = require("../Controller/serviceController");
+const {
+  uploadServiceImages,
+  handleUploadErrors,
+} = require("../middleware/uploadMiddleware.js");
+
 const router = express.Router();
+
+//services Routes
+router.get("/get-services", serviceController.getAllServices);
 
 // Category Routes
 router.get("/:categories", serviceController.getAllCategories);
@@ -22,9 +30,7 @@ router.post(
   "/categories/:categorySlug/:subCategorySlug/services",
   serviceController.addService
 );
-
 // Define the route for getting all services
-router.get("/get-services", serviceController.getAllServices);
 
 router.get("/:categorySlug/:serviceSlug", serviceController.getServiceBySlug);
 
@@ -34,8 +40,55 @@ router.put(
   serviceController.updateSubcategory
 );
 router.put(
-  "/categories/:categorySlug/subcategories/:subCategorySlug/services/:serviceSlug",
+  "/categories/:categorySlug/:subCategorySlug/services/:serviceSlug",
   serviceController.updateService
 );
 
+// serviceRoutes.js
+router.get(
+  "/categories-with-subcategories",
+  serviceController.getAllCategoriesWithSubcategories
+);
+
+router.get(
+  "/admin/services/:categorySlug/:subCategorySlug/:serviceSlug",
+  serviceController.getServiceBySlugs
+);
+
+router.get("/get-only-services", serviceController.getOnlyServices);
+
+router.delete(
+  "/categories/:categorySlug/:subCategorySlug/services/:serviceSlug",
+  serviceController.deleteService
+);
+
+router.delete("/categories/:categorySlug", serviceController.deleteCategory);
+
+router.delete(
+  "/categories/:categorySlug/subcategories/:subCategorySlug",
+  serviceController.deleteSubcategory
+);
+// Add these new routes
+router.post(
+  "/upload-images",
+  uploadServiceImages,
+  handleUploadErrors,
+  (req, res) => {
+    const files = req.files;
+    const response = {};
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    if (files.featureImage) {
+      response.featureImage = `${baseUrl}/uploads/${files.featureImage[0].filename}`;
+    }
+    if (files.beforeImage) {
+      response.beforeImage = `${baseUrl}/uploads/${files.beforeImage[0].filename}`;
+    }
+    if (files.afterImage) {
+      response.afterImage = `${baseUrl}/uploads/${files.afterImage[0].filename}`;
+    }
+
+    res.json(response);
+  }
+);
 module.exports = router;

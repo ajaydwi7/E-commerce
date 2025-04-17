@@ -53,3 +53,26 @@ exports.sendOrderConfirmationEmail = async (email, order, invoicePath) => {
 
   await transporter.sendMail(mailOptions);
 };
+
+//Free trial Email Notification to User
+exports.sendFreeTrialConfirmation = async (userEmail, freeTrialData) => {
+  const mailOptions = {
+    from: `"SnappEditt" <${process.env.SMTP_USER}>`,
+    to: userEmail,
+    subject: `Free Trial Request Received - ${freeTrialData.orderName}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Thank you for your free trial request!</h2>
+        <p>We've received your request for <strong>${freeTrialData.service}</strong> and will respond shortly.</p>
+        <h3>Request Details:</h3>
+        <ul>
+          <li>Order Name: ${freeTrialData.orderName}</li>
+          <li>Images: ${freeTrialData.images}</li>
+          <li>Description: ${freeTrialData.description}</li>
+        </ul>
+        <p>Best regards,<br/>SnappEditt Team</p>
+      </div>
+    `,
+  };
+  await transporter.sendMail(mailOptions);
+};

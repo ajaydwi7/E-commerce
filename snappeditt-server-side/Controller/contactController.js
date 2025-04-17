@@ -1,6 +1,7 @@
 const ContactForm = require("../models/ContactForm");
 const nodemailer = require("nodemailer");
-
+const Admin = require("../models/Admin");
+const { createNotification } = require("./notificationController");
 exports.submitContactForm = async (req, res) => {
   const { firstName, lastName, email, phone, topic, message, acceptTerms } =
     req.body;
@@ -22,7 +23,23 @@ exports.submitContactForm = async (req, res) => {
     // Send emails
     await sendContactEmailToServiceProvider(newContact); // Email to you
     await sendThankYouEmailToUser(newContact); // Email to user
+    // Notify admins
+    const admins = await Admin.find({
+      roles: { $in: ["super-admin", "support"] },
+      notificationPreferences: { $in: ["contact"] },
+    });
 
+    await Promise.all(
+      admins.map(async (admin) => {
+        await createNotification(
+          admin._id,
+          "contact",
+          `New contact form submission: ${topic}`,
+          newContact._id,
+          "ContactForm"
+        );
+      })
+    );
     res
       .status(200)
       .json({ success: true, message: "Form submitted successfully." });

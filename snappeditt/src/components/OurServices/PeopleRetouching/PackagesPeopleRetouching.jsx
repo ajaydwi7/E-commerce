@@ -100,10 +100,9 @@ const PackagesPeopleRetouching = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/School-SHP-1.jpg', import.meta.url).href],
+        [new URL('@images/School-SHP-3.jpg', import.meta.url).href],
+        [new URL('@images/School-SHP-2.jpg', import.meta.url).href],
       ],
       title: 'School Retouching',
       description: 'Basics of editing gives us the best result for student images.',
@@ -120,10 +119,9 @@ const PackagesPeopleRetouching = () => {
     },
     {
       images: [
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-1.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-1.jpg', import.meta.url).href],
-        [new URL('@images/Real-Estate-HDR-Basic-Raw-2.jpg', import.meta.url).href,
-        new URL('@images/Real-Estate-HDR-Basic-Corrected-2.jpg', import.meta.url).href]
+        [new URL('@images/Sports-SHP-1.jpg', import.meta.url).href],
+        [new URL('@images/Sports-SHP-3.jpg', import.meta.url).href],
+        [new URL('@images/Sports-SHP-2.jpg', import.meta.url).href]
       ],
       title: 'Sports Retouching',
       description: 'We can help you to complete your banners.',

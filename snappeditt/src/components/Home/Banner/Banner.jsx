@@ -4,12 +4,12 @@ import "./Banner.css";
 import { Link } from "react-router-dom";
 
 const Banner = () => {
-  const [text, setText] = useState("Edit"); // Initialize state for text
+  const [text, setText] = useState("Edited"); // Initialize state for text
 
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setText((prev) => (prev === "Edit" ? "Retouch" : "Edit")); // Toggle text
+      setText((prev) => (prev === "Edited" ? "Retouched" : "Edited")); // Toggle text
     }, 2000); // Change text every 2 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
@@ -31,7 +31,7 @@ const Banner = () => {
           </span>
         </div>
         <div className="subject">
-          <video className="banner-video" src={Video} autoPlay loop muted />
+          <video className="banner-video" src={Video} preload="none" autoPlay loop muted />
         </div>
       </div>
     </div>

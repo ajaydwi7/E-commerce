@@ -1,3 +1,5 @@
+import React from "react";
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import PackagesClippingPathExtraction from "@/components/OurServices/ClippingPathExtraction/PackagesClippingPathExtraction/PackagesClippingPathExtraction";
 
@@ -28,6 +30,11 @@ function ClippingPathExtractionView() {
 
   return (
     <div>
+      <SEO
+        title="Snappeditt | Clipping Path Service | Background Removal"
+        description="SnappEditt offers Clipping Path, Extraction High-quality, professional clipping paths, and image-editing services in India."
+        keywords="clipping path, extraction, photo editing, retouching, eCommerce photography"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}

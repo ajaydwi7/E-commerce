@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaCaretUp, FaDownload } from "react-icons/fa";
 import { useGlobalContext } from "../../GlobalContext/GlobalContext";
-import Pagination from "../../GlobalComponents/Pagination/Pagination";
 import "./DeliveryItem.css";
 
 const DeliveryItem = ({ order: initialOrder }) => {

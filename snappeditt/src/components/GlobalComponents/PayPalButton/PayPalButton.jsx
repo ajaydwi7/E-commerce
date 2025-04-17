@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 const PayPalButton = ({ cartTotal, cartItems, onSuccess, disabled, userId, billingDetails, couponCode, discount }) => {
   const createOrder = async () => {
     try {
-
-
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
       // Convert to number first before formatting
       const numericTotal = Number(cartTotal) || 0;
@@ -21,6 +19,7 @@ const PayPalButton = ({ cartTotal, cartItems, onSuccess, disabled, userId, billi
             unit_amount: { currency_code: "USD", value: (parseFloat(item.finalPrice ?? item.basePrice) || 0).toFixed(2), },
             quantity: parseInt(item.quantity, 10) || 1,
           })),
+          discount: discount || 0,
         }),
         credentials: "include",
       });
@@ -67,7 +66,7 @@ const PayPalButton = ({ cartTotal, cartItems, onSuccess, disabled, userId, billi
       if (captureData.status === "COMPLETED") {
         const orderDetails = {
           user_id: userId,
-          totalCost: Number(cartTotal || 0).toFixed(2),
+          totalCost: Number(cartTotal - discount || 0).toFixed(2),
           paypalOrderId: captureData.id,
           billingDetails,
           items: cartItems.map((item) => ({

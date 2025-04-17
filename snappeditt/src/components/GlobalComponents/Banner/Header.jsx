@@ -119,6 +119,7 @@ export const Header83 = (props) => {
                 <img
                   src={image.src}
                   alt={image.alt}
+                  loading="lazy"
                   className="absolute inset-0 size-full object-cover"
                 />
               </div>

@@ -1,14 +1,14 @@
-/* .logo {
+.logo {
   flex-shrink: 0;
 }
 
-.logo-image {
-  width: 180px;
+.logo img {
+  max-width: 200px;
   height: auto;
   transition: transform 0.3s ease;
 }
 
-.logo-image:hover {
+.logo img:hover {
   transform: scale(1.05);
 }
 
@@ -16,4 +16,4 @@
   .logo-image {
     max-width: 150px;
   }
-} */
+}

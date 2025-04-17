@@ -78,7 +78,7 @@ const OrderSummary = () => {
         cartTotal: numericCartTotal,
         userId: auth.state.user.id,
         couponCode: discount > 0 ? couponCode : null,
-        discount,
+        discount: discount,
       },
     });
   };

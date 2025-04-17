@@ -60,13 +60,13 @@ const ShopFooter = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Services</h3>
             <ul className="usefull-links space-y-2">
-              <li><a href="/services/real-estate">Real Estate</a></li>
-              <li><a href="/services/3d-services">3D Services</a></li>
-              <li><a href="/services/wedding-events">Wedding - Events</a></li>
-              <li><a href="/services/people-retouching/">People</a></li>
-              <li><a href="/services/products-ecommerce">Products – eCommerce</a></li>
-              <li><a href="/services/clipping-path-extraction">Clipping Path & Extraction</a></li>
-              <li><a href="/services/custom-services">Custom Payment Service</a></li>
+              <li><a href="/real-estate">Real Estate</a></li>
+              <li><a href="/3d-services">3D Services</a></li>
+              <li><a href="/wedding-events">Wedding - Events</a></li>
+              <li><a href="/people-retouching/">People</a></li>
+              <li><a href="/products-ecommerce">Products – eCommerce</a></li>
+              <li><a href="/clipping-path-extraction">Clipping Path & Extraction</a></li>
+              <li><a href="/custom-payment-service">Custom Payment Service</a></li>
             </ul>
           </div>
 

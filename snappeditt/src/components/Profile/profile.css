@@ -33,8 +33,8 @@
 }
 
 .profile-avatar {
-  width: 150px;
-  height: 150px;
+  /* width: 150px;
+  height: 150px; */
   border-radius: 50%;
   border: 4px solid #f44336;
   box-shadow: 0 8px 20px rgba(244, 67, 54, 0.2);

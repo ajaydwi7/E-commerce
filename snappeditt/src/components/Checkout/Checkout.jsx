@@ -13,6 +13,7 @@ const Checkout = () => {
   // const cartTotal = location.state.cartTotal || 0;
   const { clearCart } = serviceStore;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionAttempted, setSubmissionAttempted] = useState(false);
 
   const [billingDetails, setBillingDetails] = useState({
     name: "",
@@ -22,6 +23,7 @@ const Checkout = () => {
     state: "",
     zip: "",
     phone: "",
+    country: "",
   });
 
   const handleInputChange = (e) => {
@@ -30,23 +32,24 @@ const Checkout = () => {
   };
 
   const validateBillingDetails = () => {
-    const { name, email, address, city, state, zip, phone } = billingDetails;
-    if (!name || !email || !address || !city || !state || !zip || !phone) {
-      toast.error("Please fill in all billing details.");
-      return false;
+    const { name, email, address, city, state, zip, phone, country } = billingDetails;
+    const isValid = !!name && !!email && !!address && !!city && !!state && !!zip && !!phone && !!country;
+
+    if (submissionAttempted && !isValid) {
+      toast.error("Please fill in all required billing details.");
     }
-    return true;
+    return isValid;
   };
 
   const handlePaymentSuccess = async (savedOrderData) => {
+    setSubmissionAttempted(true);
+    // Validate billing details (already done in PayPalButton, but double-check)
+    if (!validateBillingDetails()) {
+      setIsSubmitting(false);
+      return;
+    }
     try {
       setIsSubmitting(true);
-
-      // Validate billing details (already done in PayPalButton, but double-check)
-      if (!validateBillingDetails()) {
-        setIsSubmitting(false);
-        return;
-      }
 
       if (!savedOrderData?.order?._id) {
         throw new Error("Invalid order data received");
@@ -70,6 +73,7 @@ const Checkout = () => {
   };
 
   const handleFreeOrder = async () => {
+    setSubmissionAttempted(true);
     if (!validateBillingDetails()) return;
 
     try {
@@ -176,7 +180,7 @@ const Checkout = () => {
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-gray-600">Total:</span>
                   <span className="text-2xl font-bold text-blue-600">
-                    ${Number(location.state.cartTotal || 0).toFixed(2)}
+                    ${Number(location.state.cartTotal - location.state.discount || 0).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -199,6 +203,7 @@ const Checkout = () => {
                   { icon: FiMapPin, name: "city", placeholder: "City" },
                   { icon: FiMapPin, name: "state", placeholder: "State" },
                   { icon: FiMapPin, name: "zip", placeholder: "ZIP Code" },
+                  { icon: FiMapPin, name: "country", placeholder: "Country" },
                 ].map((field) => (
                   <div key={field.name} className="relative">
                     <field.icon className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />

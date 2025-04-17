@@ -56,7 +56,7 @@ const OfferServices = () => {
         <div className="carousel-content">
           {/* Image Carousel */}
           <div className="image-slider-container">
-            <img src={service.images[currentSlide][0]} alt="Raw" className="carousel-image" />
+            <img src={service.images[currentSlide][0]} alt="Raw" className="carousel-image" loading='lazy' />
             <FaArrowLeft onClick={prevSlide} className="carousel-control prev" size={30} /> {/* Use arrow icon */}
             <FaArrowRight onClick={nextSlide} className="carousel-control next" size={30} /> {/* Use arrow icon */}
             {/* Dots for controlling the image carousel */}

@@ -1,6 +1,13 @@
+import React from 'react';
+import SEO from '@/components/SEO/SEO';
 const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <SEO
+        title="Privacy Policy | SnappEditt"
+        description="This Privacy Policy outlines how SnappEditt collects, uses, and protects your personal information. We are committed to safeguarding your privacy and ensuring the security of your data."
+        keywords="privacy policy, data protection, personal information, SnappEditt"
+      />
       <header className="mb-8">
         <h1 className="text-4xl font-semibold font-cursive text-black text-center mb-4">Privacy Policy</h1>
         <p className="text-gray-600">Last updated: 15/03/2024</p>

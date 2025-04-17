@@ -1,5 +1,6 @@
 // Login.jsx
 import React, { useState } from 'react';
+import SEO from '../SEO/SEO';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '@/components/GlobalContext/GlobalContext';
 import { Link } from 'react-router-dom';
@@ -32,6 +33,11 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primaryRed to-blue-50 flex items-center justify-center p-4">
+      <SEO
+        title="Snappeditt | Image Editing Services"
+        description="SnappEditt is a Leading Professional & Retouching Services Provider | Sign in to your account using the form."
+        keywords="sign in, login, account, SnappEditt, photo editing, orders"
+      />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
@@ -82,30 +88,6 @@ const SignIn = () => {
             <Link to="/forgot-password" className="text-primaryRed hover:text-red-600">
               Forgot Password?
             </Link>
-          </div>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
-            </div>
-          </div>
-
-          <div className="flex gap-4 justify-center">
-            <button
-              type="button"
-              className="p-3 rounded-full border border-gray-200 hover:border-primaryRed transition-colors"
-            >
-              <FaGoogle className="text-xl text-gray-600" />
-            </button>
-            <button
-              type="button"
-              className="p-3 rounded-full border border-gray-200 hover:border-primaryRed transition-colors"
-            >
-              <FaGithub className="text-xl text-gray-600" />
-            </button>
           </div>
 
           <p className="text-center text-gray-600">

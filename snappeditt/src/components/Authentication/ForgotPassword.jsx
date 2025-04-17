@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import SEO from '../SEO/SEO';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -33,6 +34,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <SEO title="Snappeditt | Photo Retouching Services" noindex={true} />
       <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 transition-all duration-300 hover:shadow-3xl">
         <div className="flex flex-col items-center mb-8">
           <svg

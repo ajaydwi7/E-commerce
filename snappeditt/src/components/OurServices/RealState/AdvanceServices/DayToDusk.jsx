@@ -9,7 +9,7 @@ const DayToDusk = () => {
 
   const service = {
     title: "Day To Dusk",
-    price: "$5.00/Image",
+    price: "$4.00/Image",
     description: "With our Virtual Twilight service, we convert your day shot of your exterior property to a stunning and beautiful dusk/ twilight shot.",
     buttonUrl: '/services/real-estate/day-to-dusk',
     features: [

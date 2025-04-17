@@ -65,25 +65,25 @@ const Links = ({ closeMenu, isMobile = false }) => {
         </button>
 
         <div className={`submenu ${isServicesOpen ? "submenu-open" : ""}`}>
-          <Link to={"/services/real-estate"} onClick={handleLinkClick}>
+          <Link to={"/real-estate"} onClick={handleLinkClick}>
             Real-Estate
           </Link>
-          <Link to={"/services/3d-services"} onClick={handleLinkClick}>
+          <Link to={"/3d-services"} onClick={handleLinkClick}>
             3D Services
           </Link>
-          <Link to={"/services/wedding-events"} onClick={handleLinkClick}>
+          <Link to={"/wedding-events"} onClick={handleLinkClick}>
             Wedding Events
           </Link>
-          <Link to={"/services/products-ecommerce"} onClick={handleLinkClick}>
+          <Link to={"/products-ecommerce"} onClick={handleLinkClick}>
             Products ~ eCommerce
           </Link>
-          <Link to={"/services/people-retouching"} onClick={handleLinkClick}>
+          <Link to={"/people-retouching"} onClick={handleLinkClick}>
             People Retouching
           </Link>
-          <Link to={"/services/clipping-path-extraction"} onClick={handleLinkClick}>
+          <Link to={"/clipping-path-extraction"} onClick={handleLinkClick}>
             Clipping Path ~ Extraction
           </Link>
-          <Link to={"/services/custom-payment-service"} onClick={handleLinkClick}>
+          <Link to={"/custom-payment-service"} onClick={handleLinkClick}>
             Custom Payment
           </Link>
         </div>

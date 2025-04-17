@@ -1,3 +1,5 @@
+import React from "react";
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import OfferServices from "@/components/OurServices/3dServices/ServicesOffer/OfferServices";
 import ThreeDRendring from "@/components/OurServices/3dServices/ServicesOffer/3DRendring";
@@ -28,6 +30,11 @@ function ThreeDdServicesView() {
 
   return (
     <div>
+      <SEO
+        title="Snappeditt | 3d Rendering services| Interior Design"
+        description="We Specialise in 3D Floorplans, 3D Architectural Renderings, Real Estate & Building Projects, 3D Interior Designs, and more! We provide the best 3D Rendering Services."
+        keywords="3D services, photo editing, retouching, 3D rendering, architectural rendering"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}

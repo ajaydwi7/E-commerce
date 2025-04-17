@@ -39,7 +39,11 @@ exports.validateCoupon = async (req, res) => {
 
 exports.createCoupon = async (req, res) => {
   try {
-    const couponData = { ...req.body, code: req.body.code.toUpperCase() };
+    const couponData = {
+      ...req.body,
+      code: req.body.code.toUpperCase(),
+      createdBy: req.admin._id,
+    };
     const coupon = new Coupon(couponData);
     await coupon.save();
     res.status(201).json(coupon);
@@ -54,5 +58,41 @@ exports.getAllCoupons = async (req, res) => {
     res.json(coupons);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch coupons" });
+  }
+};
+
+exports.deleteCoupon = async (req, res) => {
+  try {
+    const coupon = await Coupon.findByIdAndDelete(req.params.id);
+    if (!coupon) {
+      return res.status(404).json({ error: "Coupon not found" });
+    }
+    res.json({ message: "Coupon deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete coupon" });
+  }
+};
+
+exports.updateCoupon = async (req, res) => {
+  try {
+    const updates = { ...req.body, lastModifiedBy: req.admin._id };
+
+    if (updates.code) {
+      updates.code = updates.code.toUpperCase();
+    }
+
+    const updatedCoupon = await Coupon.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedCoupon) {
+      return res.status(404).json({ error: "Coupon not found" });
+    }
+
+    res.json(updatedCoupon);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

@@ -81,6 +81,10 @@ const ServiceOrderSchema = new Schema({
       type: String,
       required: true,
     },
+    country: {
+      type: String,
+      required: true,
+    },
   },
   // Add to ServiceOrderSchema
   couponCode: {

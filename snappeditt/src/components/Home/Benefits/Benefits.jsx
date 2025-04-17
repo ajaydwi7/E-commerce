@@ -12,7 +12,7 @@ const Benefits = () => {
     },
     {
       icon: <FaUsers></FaUsers>,
-      title: "Expert Team",
+      title: "Dedicated Team",
       id: 2,
     },
     {

@@ -10,6 +10,7 @@ const contactRoutes = require("./routes/contactRoutes");
 const freeTrialRoutes = require("./routes/freeTrialRoutes");
 const adminRoutes = require("./routes/admin");
 const couponRoutes = require("./routes/couponRoutes");
+const customPaymentRoutes = require("./routes/customPaymentRoutes");
 const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -17,11 +18,9 @@ const uri = process.env.MONGO_DB_URI;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
-const cloudinary = require("cloudinary").v2;
-//import { v2 as cloudinary } from 'cloudinary';
-
+const fs = require("fs");
 const PORT = process.env.PORT || 3000;
-const __dirname = path.resolve();
+const _dirname = path.resolve();
 
 console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
@@ -36,33 +35,22 @@ mongoose
     console.log("Error: ", err);
   });
 
-cloudinary.config({
-  cloud_name: "dyoqduyyu",
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-// (async function () {
-//   const results = await cloudinary.uploader.upload("./images/1376073.jpg");
-//   console.log(results);
+const ensureUploadsDir = () => {
+  const dir = "./uploads";
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
-//   const URL = cloudinary.url(results.public_id, {
-//     transformation: [
-//       {
-//         qulity: "auto",
-//         fetch_format: "auto",
-//       },
-//       {
-//         width: 1200,
-//         height: 1200,
-//       },
-//     ],
-//   });
-//   console.log(URL);
-// })();
+ensureUploadsDir();
+// Add this before your route definitions
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const allowedOrigins = [
-  "https://snappeditt.onrender.com/", // Dev Frontend
-  process.env.FRONTEND_URL, // Production Frontend
+  "http://localhost:5173", // Dev Frontend
+  process.env.FRONTEND_URL,
+  "https://www.sandbox.paypal.com",
+  "https://api.sandbox.paypal.com", // Production Frontend
 ];
 
 app.use(
@@ -77,6 +65,7 @@ app.use(
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type,Authorization",
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
@@ -91,17 +80,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction) {
-  app.use(express.static(path.join(__dirname, "/snappeditt/dist")));
+  app.use(express.static(path.join(_dirname, "/snappeditt/dist")));
 }
-// Routes
-app.use("/api", routes, contactRoutes, freeTrialRoutes);
 
-//adminroutesconst adminRoutes = require('./routes/admin');
+// Routes
 app.use("/api/admin", adminRoutes);
+app.use("/api", routes, contactRoutes, freeTrialRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/paypal", paymentRoutes);
+app.use("/api/custom-payment", customPaymentRoutes);
 app.use("/api/coupons", couponRoutes);
 
 app._router.stack.forEach((middleware) => {
@@ -113,7 +102,7 @@ app._router.stack.forEach((middleware) => {
 // error handling middleware
 if (isProduction) {
   app.get("*", (_, res) => {
-    res.sendFile(path.resolve(__dirname, "snappeditt", "dist", "index.html"));
+    res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
   });
 } else {
   console.log("Development Mode: Frontend runs on http://localhost:5173");

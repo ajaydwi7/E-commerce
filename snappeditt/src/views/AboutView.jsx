@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../components/SEO/SEO';
 import AboutBanner from '../components/GlobalComponents/Banner/PageBanner';
 import MissionVision from '../components/AboutUs/MissionVision/MissionVision';
 import missionVisionImage from "@/assets/images/missionVission.png";
@@ -15,6 +16,11 @@ const AboutView = () => {
   };
   return (
     <div>
+      <SEO
+        title="About Us | SnappEditt"
+        description="SnappEditt is a photo editing company that specializes in providing high-quality photo editing services to photographers and businesses. Our team of experienced editors is dedicated to delivering exceptional results that meet the unique needs of our clients."
+        keywords="photo editing, retouching, ecommerce editing, background removal"
+      />
       <main>
         <section className="about-banner">
           <AboutBanner scrollToSection={scrollToSection}></AboutBanner>

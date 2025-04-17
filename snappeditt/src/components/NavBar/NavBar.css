@@ -15,7 +15,7 @@
   padding: 0 1rem;
 }
 
-/* Logo styles */
+/* Logo styles
 .logo {
   flex-shrink: 0;
 }
@@ -28,7 +28,7 @@
 
 .logo img:hover {
   transform: scale(1.05);
-}
+} */
 
 /* Links styles */
 .links {

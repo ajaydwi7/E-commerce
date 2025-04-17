@@ -9,10 +9,9 @@ const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
     email: "",
     phone: "",
     service: "",
-    images: "1",
+    images: 1,
     orderName: "",
     imageLinks: "",
-    files: null,
     description: "",
   });
 
@@ -20,10 +19,10 @@ const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
 
   // Input change handler
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: files ? files[0] : value,
+      [name]: value,
     });
   };
 
@@ -65,16 +64,18 @@ const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
     if (!validateStep2()) return;
 
     try {
-      // Create FormData to handle file uploads
-      const formPayload = new FormData();
-      Object.keys(formData).forEach((key) => {
-        formPayload.append(key, formData[key]);
-      });
+      // Convert images to number and prepare JSON payload
+      const payload = {
+        ...formData,
+        images: Number(formData.images),
+      };
 
-      // Send data to the backend
       const response = await fetch(`${import.meta.env.VITE_API_URL}/free-trial`, {
         method: "POST",
-        body: formPayload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -90,7 +91,6 @@ const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
           images: "1",
           orderName: "",
           imageLinks: "",
-          files: null,
           description: "",
         });
         setCurrentStep(1);
@@ -284,18 +284,6 @@ const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
                         placeholder="https://example.com"
                       />
                       {errors.imageLinks && <span className="text-red-500 text-sm">{errors.imageLinks}</span>}
-                    </div>
-
-                    {/* Upload Files */}
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-medium">Upload Files (.zip/.tar)</label>
-                      <input
-                        type="file"
-                        name="files"
-                        accept=".zip,.tar"
-                        onChange={handleChange}
-                        className="w-full text-gray-700 border p-2 rounded"
-                      />
                     </div>
 
                     {/* Description */}

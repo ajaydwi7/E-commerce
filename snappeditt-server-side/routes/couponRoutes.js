@@ -4,14 +4,19 @@ const {
   validateCoupon,
   createCoupon,
   getAllCoupons,
+  deleteCoupon,
+  updateCoupon,
 } = require("../Controller/couponController");
-const { protect, admin } = require("../middleware/checkAuth");
+const { protect, restrictTo } = require("../middleware/adminAuth");
 
 // Public routes
 router.post("/validate", validateCoupon);
 
 // // Admin routes
-// router.post("/", protect, admin, createCoupon);
-// router.get("/", protect, admin, getAllCoupons);
-
+router.use(protect);
+router.post("/", restrictTo("super-admin", "admin"), createCoupon);
+router.get("/", restrictTo("super-admin", "admin", "support"), getAllCoupons);
+// Add these routes under admin routes section
+router.delete("/:id", restrictTo("super-admin", "admin"), deleteCoupon);
+router.put("/:id", restrictTo("super-admin", "admin"), updateCoupon);
 module.exports = router;

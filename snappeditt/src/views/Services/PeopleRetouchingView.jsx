@@ -1,3 +1,5 @@
+import React from "react";
+import SEO from "@/components/SEO/SEO";
 import { Header83 } from "@/components/GlobalComponents/Banner/Header";
 import PackagesPeopleRetouching from "@/components/OurServices/PeopleRetouching/PackagesPeopleRetouching";
 
@@ -28,6 +30,11 @@ function PeopleRetouchingView() {
 
   return (
     <div>
+      <SEO
+        title="Snappeditt | Portrait Photo Editing Services"
+        description="We Offer Photo Editing & Retouching Services for Portraits, Headshots, Pregnancy, Baby, School, Sports, Fashion, Beauty, Advertising, Corporate Events, etc."
+        keywords="people retouching, photo editing, retouching, portrait photography, headshot photography"
+      />
       <main>
         <section>
           {/* Pass the custom content as props to Header83 */}
