@@ -1,18 +1,42 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { toast } from "react-toastify"
+import { useGlobalContext } from "@/components/GlobalContext/GlobalContext";
 
 const CustomPaymentForm = () => {
+  const { auth } = useGlobalContext();
+  const user = auth.state.user;
   const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+    reset,
+    watch
+  } = useForm({
+    defaultValues: {
+      fullName: `${user?.firstName || ""} ${user?.lastName || ""}`.trim(),
+      email: user?.email || "",
+      orderType: "new"
+    }
+  });
+
+  const selectedOrderType = watch("orderType");
+
+  useEffect(() => {
+    reset({
+      fullName: `${user?.firstName || ""} ${user?.lastName || ""}`.trim(),
+      email: user?.email || "",
+      orderNumber: "", // Always clear order number on reset
+      orderType: "new",
+      orderDetails: ""
+    });
+  }, [user, reset]);
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async (data) => {
@@ -25,7 +49,7 @@ const CustomPaymentForm = () => {
           userDetails: {
             fullName: data.fullName,
             email: data.email,
-            orderNumber: data.orderNumber,
+            ...(selectedOrderType === "existing" && { orderNumber: data.orderNumber }),
           },
           serviceType: data.orderType,
           orderDetails: data.orderDetails
@@ -34,7 +58,7 @@ const CustomPaymentForm = () => {
 
       const result = await response.json();
 
-      if (!response.ok) { // Handle server errors
+      if (!response.ok) {
         throw new Error(result.error || "Failed to create order");
       }
 
@@ -42,13 +66,14 @@ const CustomPaymentForm = () => {
         navigate("/payment-form", {
           state: {
             ...data,
-            dbOrderId: result.dbOrderId // Remove paypalOrderId from here
+            dbOrderId: result.dbOrderId,
+            customOrderId: result.customOrderId
           }
         });
       }
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error(error.message); // Show actual error message
+      toast.error(error.message);
     }
     setIsSubmitting(false);
   };
@@ -115,24 +140,28 @@ const CustomPaymentForm = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="relative">
-                <input
-                  id="orderNumber"
-                  {...register("orderNumber", { required: "Order number is required" })}
-                  className={`peer w-full px-4 pt-6 pb-2 rounded-lg border ${errors.orderNumber ? "border-red-500" : "border-gray-300"
-                    } focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent placeholder-transparent`}
-                  placeholder="Order Number"
-                />
-                <label
-                  htmlFor="orderNumber"
-                  className="absolute top-2 left-4 text-xs font-medium text-gray-500 transition-all 
-                  peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 
-                  peer-focus:top-2 peer-focus:text-xs peer-focus:text-[#ff4d4d]"
-                >
-                  Order Number
-                </label>
-                {errors.orderNumber && <p className="text-red-500 text-sm mt-1">{errors.orderNumber.message}</p>}
-              </div>
+              {selectedOrderType === "existing" && (
+                <div className="relative">
+                  <input
+                    id="orderNumber"
+                    {...register("orderNumber", {
+                      required: selectedOrderType === "existing" && "Order number is required"
+                    })}
+                    className={`peer w-full px-4 pt-6 pb-2 rounded-lg border ${errors.orderNumber ? "border-red-500" : "border-gray-300"
+                      } focus:ring-2 focus:ring-[#ff4d4d] focus:border-transparent placeholder-transparent`}
+                    placeholder="Order Number"
+                  />
+                  <label
+                    htmlFor="orderNumber"
+                    className="absolute top-2 left-4 text-xs font-medium text-gray-500 transition-all 
+                    peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 
+                    peer-focus:top-2 peer-focus:text-xs peer-focus:text-[#ff4d4d]"
+                  >
+                    Order Number
+                  </label>
+                  {errors.orderNumber && <p className="text-red-500 text-sm mt-1">{errors.orderNumber.message}</p>}
+                </div>
+              )}
             </div>
           </div>
 

@@ -8,7 +8,8 @@ import { FiUser, FiMail, FiHome, FiMapPin, FiSmartphone, FiCreditCard } from "re
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { serviceStore, orders } = useGlobalContext();
+  const { auth, serviceStore, orders } = useGlobalContext();
+  const user = auth.state.user;
   const cart = serviceStore.state?.cart || 0;
   // const cartTotal = location.state.cartTotal || 0;
   const { clearCart } = serviceStore;
@@ -16,15 +17,32 @@ const Checkout = () => {
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
 
   const [billingDetails, setBillingDetails] = useState({
-    name: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    phone: "",
-    country: "",
+    name: `${user?.firstName || ""} ${user?.lastName || ""}`.trim(),
+    email: user?.email || "",
+    phone: user?.phone || "",
+    address: `${user?.address?.streetNumber || ""} ${user?.address?.streetName || ""}`.trim(),
+    city: user?.address?.city || "",
+    state: user?.address?.state || "",
+    zip: user?.address?.postalCode || "",
+    country: user?.address?.country || "",
   });
+
+  // Update useEffect dependency array
+  useEffect(() => {
+    if (user) {
+      setBillingDetails(prev => ({
+        ...prev,
+        name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+        email: user.email || "",
+        phone: user.phone || "",
+        address: `${user?.address?.streetNumber || ""} ${user?.address?.streetName || ""}`.trim(),
+        city: user.address?.city || "",
+        state: user.address?.state || "",
+        zip: user.address?.postalCode || "",
+        country: user.address?.country || "",
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

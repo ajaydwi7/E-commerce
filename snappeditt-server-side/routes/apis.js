@@ -31,7 +31,10 @@ router.put("/users/:id", checkAuth, async (req, res) => {
       new: true,
     });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    res.json({
+      ...user._doc,
+      address: user.address || {},
+    });
   } catch (err) {
     res.status(500).json({ error: "Error updating user data" });
   }

@@ -52,8 +52,6 @@ const OrderSummary = () => {
   }, [cart]);
 
 
-
-
   const proceedToCheckout = () => {
     if (!auth.state.user) {
       modal.openModal();
@@ -66,11 +64,6 @@ const OrderSummary = () => {
         0
       )
     );
-
-    // const cartTotal = cart.reduce(
-    //   (total, item) => total + (item.finalPrice ?? item.basePrice) * item.quantity,
-    //   0
-    // );
 
     navigate("/checkout", {
       state: {
@@ -103,7 +96,10 @@ const OrderSummary = () => {
           {/* Order Items */}
           <div className="order-items">
             {cart.map((item) => (
-              <div key={item.serviceId || item.id || item._id} className="order-item">
+              <div
+                key={`${item.serviceId}-${JSON.stringify(item.selectedVariations.map(v => v.optionId).sort())}`}
+                className="order-item"
+              >
                 <span>{item.name}</span>
                 <span>
                   ${item.finalPrice ?? item.basePrice} x {item.quantity} = $

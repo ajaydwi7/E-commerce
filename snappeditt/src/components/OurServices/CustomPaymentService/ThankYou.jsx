@@ -20,7 +20,7 @@ const ThankYou = () => {
     if (location.state?.order) {
       const order = location.state.order
       setOrderDetails({
-        orderId: order._id || "SNP-" + Math.floor(100000 + Math.random() * 900000),
+        orderId: order.customOrderId || "SNP-" + Math.floor(100000 + Math.random() * 900000),
         date: new Date(order.createdAt || Date.now()).toLocaleDateString(),
         status: order.payment?.status || "Completed",
         amount: `$${order.serviceDetails?.price || "0.00"}`,

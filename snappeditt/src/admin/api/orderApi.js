@@ -34,11 +34,12 @@ export const fetchOrderById = async (orderId) => {
   }
 };
 
-export const fetchOrdersByUser = async (userId) => {
+export const fetchOrdersByUser = async (userId, page = 1, limit = 5) => {
   try {
-    const response = await fetch(`${API_URL}/order/user/${userId}`, {
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${API_URL}/order/user/${userId}?page=${page}&limit=${limit}`,
+      { credentials: "include" }
+    );
     if (!response.ok) {
       throw new Error("Failed to fetch user orders");
     }

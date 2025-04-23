@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
+const Counter = require("./Counter");
+const InvoiceCounter = require("./InvoiceCounter"); // Ensure this path is correct
 const Schema = mongoose.Schema;
 
 const ServiceOrderSchema = new Schema({
+  customOrderId: {
+    type: String,
+    unique: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -116,9 +122,14 @@ const ServiceOrderSchema = new Schema({
     default: "Pending",
     required: true,
   },
+  invoiceNumber: {
+    type: String,
+    unique: true,
+    index: true, // Add index for faster queries
+  },
   invoiceUrl: {
     type: String,
-    required: true,
+    unique: true,
   },
   order_cancelled: {
     type: Boolean,
@@ -139,6 +150,49 @@ const ServiceOrderSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+// Add pre-save hook to generate sequential ID
+ServiceOrderSchema.pre("save", function (next) {
+  if (this.isNew) {
+    Counter.findByIdAndUpdate(
+      { _id: "orderId" },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    )
+      .then((counter) => {
+        this.customOrderId = `SNP-${counter.seq}`;
+        next();
+      })
+      .catch((error) => next(error));
+  } else {
+    next();
+  }
+});
+
+// Update the pre-save hook for invoice number
+ServiceOrderSchema.pre("save", function (next) {
+  if (this.isNew) {
+    const currentYear = new Date().getFullYear();
+
+    InvoiceCounter.findOneAndUpdate(
+      { _id: "invoiceId", year: currentYear },
+      { $inc: { seq: 1 }, $setOnInsert: { year: currentYear } },
+      { new: true, upsert: true }
+    )
+      .then((counter) => {
+        // Generate 4-digit sequential number
+        const seq = counter.seq.toString().padStart(4, "0");
+        this.invoiceNumber = `SE-${currentYear}-${seq}`;
+
+        // Set relative path instead of full URL
+        this.invoiceUrl = `/order/invoice/${this.invoiceNumber}`;
+        next();
+      })
+      .catch(next);
+  } else {
+    next();
+  }
 });
 
 module.exports = mongoose.model("ServiceOrder", ServiceOrderSchema);

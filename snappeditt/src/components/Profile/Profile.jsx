@@ -9,7 +9,7 @@ import CountryStateSelector from "../GlobalComponents/CountryStateSelector/Count
 import { Country, State } from 'country-state-city'
 
 const UserProfile = () => {
-  const { state, logout } = useAuth()
+  const { state, logout, updateUser } = useAuth()
   const [user, setUser] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editedUser, setEditedUser] = useState({ address: {} })
@@ -91,7 +91,7 @@ const UserProfile = () => {
   }
 
   const handleSave = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user._id}`, {
         method: "PUT",
@@ -101,22 +101,23 @@ const UserProfile = () => {
           ...editedUser,
           address: editedUser.address || {}
         }),
-      })
+      });
 
       if (response.ok) {
-        const updatedUser = await response.json()
-        setUser(updatedUser)
-        setEditedUser(updatedUser)
-        setIsEditing(false)
-        toast.success("Profile updated successfully!")
+        const updatedUser = await response.json();
+        setUser(updatedUser);
+        setEditedUser(updatedUser);
+        setIsEditing(false);
+        updateUser(updatedUser); // Add this line to sync global state
+        toast.success("Profile updated successfully!");
       } else {
-        toast.error("Failed to update profile")
+        toast.error("Failed to update profile");
       }
     } catch (error) {
-      console.error("Error updating user data:", error)
-      toast.error("Error updating profile")
+      console.error("Error updating user data:", error);
+      toast.error("Error updating profile");
     }
-  }
+  };
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();

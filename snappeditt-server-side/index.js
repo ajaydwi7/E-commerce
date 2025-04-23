@@ -81,6 +81,7 @@ app.use(express.urlencoded({ extended: true }));
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction) {
   app.use(express.static(path.join(_dirname, "/snappeditt/dist")));
+  app.use(express.static(path.join(_dirname, "/snappeditt/dist")));
 }
 
 // Routes
@@ -102,6 +103,7 @@ app._router.stack.forEach((middleware) => {
 // error handling middleware
 if (isProduction) {
   app.get("*", (_, res) => {
+    res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
     res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
   });
 } else {

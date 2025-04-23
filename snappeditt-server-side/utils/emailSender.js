@@ -20,7 +20,7 @@ exports.sendOrderConfirmationEmail = async (email, order, invoicePath) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #2d3748;">Thank you for your order!</h2>
         <p>Your order (#${
-          order._id
+          order.customOrderId
         }) has been successfully placed on our Website. We shall verify your payment and process your order soon.</p>
         <h3 style="color: #2d3748;">Order Summary</h3>
         <p></p>
@@ -45,7 +45,7 @@ exports.sendOrderConfirmationEmail = async (email, order, invoicePath) => {
     `,
     attachments: [
       {
-        filename: `invoice-${order._id}.pdf`,
+        filename: `#${order.invoiceNumber}.pdf`,
         path: invoicePath,
       },
     ],
@@ -71,6 +71,38 @@ exports.sendFreeTrialConfirmation = async (userEmail, freeTrialData) => {
           <li>Description: ${freeTrialData.description}</li>
         </ul>
         <p>Best regards,<br/>SnappEditt Team</p>
+      </div>
+    `,
+  };
+  await transporter.sendMail(mailOptions);
+};
+
+// emailSender.js
+exports.sendCustomOrderConfirmation = async (email, order) => {
+  const mailOptions = {
+    from: `"SnappEditt" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: `Custom Order Confirmation - ${order.customOrderId}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2d3748;">Thank you for your custom order!</h2>
+        <p>Your order (${
+          order.customOrderId
+        }) has been successfully processed.</p>
+        
+        <h3 style="color: #2d3748;">Order Summary</h3>
+        <ul>
+          <li>Service Type: ${order.serviceType}</li>
+          <li>Description: ${order.serviceDetails.description || "N/A"}</li>
+          <li>Price: $${order.serviceDetails.price?.toFixed(2) || "0.00"}</li>
+          <li>Status: ${order.payment.status}</li>
+        </ul>
+        
+        <p>We will contact you regarding your "${
+          order.orderDetails
+        }" request shortly.</p>
+        <p>Regards</p>
+        <p>Team SnappEditt</p>
       </div>
     `,
   };

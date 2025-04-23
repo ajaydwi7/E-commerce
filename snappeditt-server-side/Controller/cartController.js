@@ -70,9 +70,23 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    const existingItemIndex = cart.items.findIndex(
-      (cartItem) => cartItem.serviceId.toString() === item.serviceId
-    );
+    const existingItemIndex = cart.items.findIndex((cartItem) => {
+      // 1. Check service ID match
+      if (cartItem.serviceId.toString() !== item.serviceId) return false;
+
+      // 2. Compare variation combinations
+      const existingVariationIds = cartItem.selectedVariations
+        .map((v) => v.optionId.toString())
+        .sort()
+        .join("-");
+
+      const newVariationIds = item.selectedVariations
+        .map((v) => v.optionId.toString())
+        .sort()
+        .join("-");
+
+      return existingVariationIds === newVariationIds;
+    });
 
     if (existingItemIndex >= 0) {
       cart.items[existingItemIndex].quantity += item.quantity;

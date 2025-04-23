@@ -208,7 +208,7 @@ function OrderManagement() {
                 filteredOrders.map((order) => (
                   <tr key={order._id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{order._id.substring(0, 8)}...</div>
+                      <div className="text-sm font-medium text-gray-900">{order.customOrderId}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{order.billingDetails?.name || "N/A"}</div>

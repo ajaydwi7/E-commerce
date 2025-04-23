@@ -118,8 +118,8 @@ const DeliveryItem = ({ order: initialOrder }) => {
           <div className="delivery-overview">
             <div className="delivery-summary">
               <div className="delivery-order-number">
-                <h2 className="delivery-item-title order-main" title={order._id}>
-                  Order: <span>#</span>{order._id.slice(0, 6)}
+                <h2 className="delivery-item-title order-main">
+                  Order: <span>#</span>{order.customOrderId}
                 </h2>
                 <div className="delivery-items">
                   <h5>Item Count: {order.items.length}</h5>
@@ -177,7 +177,9 @@ const DeliveryItem = ({ order: initialOrder }) => {
                 <h3>Services in Delivery</h3>
                 <div className="delivery-services">
                   {order.items.map((service) => (
-                    <div className="delivery-service-item" key={service.serviceId}>
+                    <div
+                      className="delivery-service-item"
+                      key={`${service.serviceId}-${JSON.stringify(service.selectedVariations?.map(v => v.optionId).sort() || '')}`}>
                       <img src={service.featureImage} alt={service.serviceName} width="50" />
                       <h5>Service Name: {service.serviceName}</h5>
                       <h5>Description: {service.serviceDescription}</h5>
@@ -232,13 +234,13 @@ const DeliveryItem = ({ order: initialOrder }) => {
               </button>
 
               <a
-                href={`${import.meta.env.VITE_API_URL}/order/${order._id}/invoice`}
+                href={`${import.meta.env.VITE_API_URL}${order.invoiceUrl}`}
                 download
                 className="flex flex-col items-center hover:text-yellow-600 transition-colors"
                 title="Download invoice"
               >
-                <FaDownload className=" text-primaryRed w-5 h-5" />
-                <span className=" text-primaryBlack text-xs mt-0.5">Invoice</span>
+                <FaDownload className="text-primaryRed w-5 h-5" />
+                <span className="text-primaryBlack text-xs mt-0.5">Invoice</span>
               </a>
             </div>
           )}

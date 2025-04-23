@@ -1,30 +1,50 @@
 const mongoose = require("mongoose");
-const ServiceOrder = require("./models/ServiceOrder"); // Ensure this path is correct
+const ServiceOrder = require("./models/ServiceOrder");
+const Counter = require("./models/Counter");
 
-// MongoDB connection string
 const mongoURI =
-  "mongodb+srv://ajaydwi7:Raja%23dwi7@cluster0.zy0by.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Replace with your MongoDB URI
+  "mongodb+srv://ajaydwi7:Raja%23dwi7@cluster0.zy0by.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-const migrateOrders = async () => {
-  try {
-    // Connect to MongoDB
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Connected to MongoDB.");
+async function migrateOrderNumbers() {
+  await mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
-    // Update all documents to add `order_cancelled` field
-    await ServiceOrder.updateMany({}, { $set: { order_cancelled: false } });
-    console.log(
-      "Migration completed: Added `order_cancelled` field to all orders."
-    );
-  } catch (error) {
-    console.error("Migration failed:", error);
-  } finally {
-    // Disconnect from MongoDB
-    mongoose.connection.close();
+  // Initialize counter
+  const counter = await Counter.findOneAndUpdate(
+    { _id: "orderId" },
+    { $setOnInsert: { seq: 1000 } },
+    { new: true, upsert: true }
+  );
+
+  // Get orders without customOrderId
+  const orders = await ServiceOrder.find({
+    customOrderId: { $exists: false },
+  }).sort({ createdAt: 1 });
+
+  let sequence = counter.seq;
+  for (const order of orders) {
+    sequence++;
+
+    // Add temporary values for required fields
+    if (!order.invoiceUrl) {
+      order.invoiceUrl = `temp-invoice-${sequence}`;
+    }
+
+    // Ensure billingDetails.country exists
+    if (order.billingDetails && !order.billingDetails.country) {
+      order.billingDetails.country = "Unknown";
+    }
+
+    // Save without validation
+    await order.save({ validateBeforeSave: false });
   }
-};
 
-migrateOrders();
+  // Update counter
+  await Counter.findByIdAndUpdate("orderId", { seq: sequence });
+  console.log(`Migrated ${orders.length} orders`);
+  process.exit();
+}
+
+migrateOrderNumbers().catch(console.error);

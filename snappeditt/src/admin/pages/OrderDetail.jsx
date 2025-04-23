@@ -146,7 +146,7 @@ function OrderDetail() {
           <div className="space-y-3">
             <div>
               <p className="text-sm font-medium text-gray-500">Order ID</p>
-              <p className="mt-1 text-sm text-gray-900">{order._id}</p>
+              <p className="mt-1 text-sm text-gray-900">{order.customOrderId}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Date</p>

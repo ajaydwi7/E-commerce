@@ -121,7 +121,6 @@ const confirmOrder = async (req, res) => {
     }
 
     const newOrder = new ServiceOrder(orderPayload);
-    newOrder.invoiceUrl = `/api/order/${newOrder._id}/invoice`;
 
     await newOrder.save();
     // Generate invoice
@@ -155,8 +154,10 @@ const confirmOrder = async (req, res) => {
       message: "Order placed successfully",
       order: {
         ...newOrder.toObject(),
+        customOrderId: newOrder.customOrderId,
         paymentStatus: newOrder.paymentStatus,
-        invoiceUrl: `/order/${newOrder._id}/invoice`,
+        invoiceNumber: newOrder.invoiceNumber,
+        invoiceUrl: newOrder.invoiceUrl,
       },
       // order: updatedOrder.toObject(),
     });
@@ -172,29 +173,34 @@ const confirmOrder = async (req, res) => {
 
 const getOrderInvoice = async (req, res) => {
   try {
-    const order = await ServiceOrder.findById(req.params.orderId);
-    if (!order) return res.status(404).json({ error: "Order not found" });
+    const order = await ServiceOrder.findOne({
+      invoiceNumber: req.params.invoiceNumber,
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
 
     const invoicePath = path.join(
       __dirname,
       "../invoices",
-      `invoice-${order._id}.pdf`
+      `${order.invoiceNumber}.pdf`
     );
 
     if (!fs.existsSync(invoicePath)) {
+      console.log(`PDF file missing: ${invoicePath}`);
       return res.status(404).json({ error: "Invoice not found" });
     }
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=invoice-${order._id}.pdf`
+      `attachment; filename=${order.invoiceNumber}.pdf`
     );
 
-    const fileStream = fs.createReadStream(invoicePath);
-    fileStream.pipe(res);
+    fs.createReadStream(invoicePath).pipe(res);
   } catch (error) {
-    console.error("Error fetching invoice:", error);
+    console.error("Invoice error:", error);
     res.status(500).json({ error: "Failed to fetch invoice" });
   }
 };

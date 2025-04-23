@@ -8,7 +8,7 @@ exports.generateInvoice = (order, user) => {
   const invoicePath = path.join(
     __dirname,
     "../invoices",
-    `invoice-${order._id}.pdf`
+    `${order.invoiceNumber}.pdf`
   );
 
   if (!fs.existsSync(path.dirname(invoicePath))) {
@@ -35,7 +35,8 @@ exports.generateInvoice = (order, user) => {
   // Order Details
   doc
     .fontSize(12)
-    .text(`Order ID: ${order._id}`)
+    .text(`Invoice #: ${order.invoiceNumber}`)
+    .text(`Order ID: ${order.customOrderId}`)
     .text(`Order Date: ${order.createdAt.toLocaleDateString()}`)
     .moveDown();
 

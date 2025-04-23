@@ -10,6 +10,8 @@ const UserSchema = new Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
+      unique: true, // Add unique constraint
+      index: true,
     },
     password: {
       type: String,

@@ -1,6 +1,7 @@
 const CustomServiceOrder = require("../models/CustomOrder");
 const paypal = require("@paypal/checkout-server-sdk");
 const { client } = require("../helper/paypal");
+const { sendCustomOrderConfirmation } = require("../utils/emailSender");
 
 const createCustomOrder = async (req, res) => {
   try {
@@ -10,7 +11,12 @@ const createCustomOrder = async (req, res) => {
     if (!userDetails || !serviceType) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-
+    // validation for existing orders
+    if (serviceType === "existing" && !userDetails.orderNumber) {
+      return res
+        .status(400)
+        .json({ error: "Order number required for existing orders" });
+    }
     // Create database record without PayPal details
     const newOrder = new CustomServiceOrder({
       userDetails,
@@ -29,7 +35,8 @@ const createCustomOrder = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      dbOrderId: newOrder._id, // Return only database ID
+      dbOrderId: newOrder._id,
+      customOrderId: newOrder.customOrderId,
     });
   } catch (error) {
     console.error("Custom order creation error:", error);
@@ -147,6 +154,12 @@ const captureCustomPayment = async (req, res) => {
         "payment.captureId": capture.result.id,
       },
       { new: true }
+    );
+
+    // Send confirmation email
+    await sendCustomOrderConfirmation(
+      updatedOrder.userDetails.email,
+      updatedOrder
     );
 
     res.status(200).json({ success: true, order: updatedOrder });

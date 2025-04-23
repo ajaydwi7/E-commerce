@@ -20,7 +20,9 @@ const Order = () => {
           {cart.length > 0 ? (
             cart.map((service) => (
               <OrderDetails
-                key={service.serviceId || service.id || service._id} // Ensure key is set to the unique `id` of the service
+                key={`${service.serviceId}-${JSON.stringify(
+                  service.selectedVariations?.map(v => v.optionId).sort() || ''
+                )}`}
                 service={service}
               />
             ))

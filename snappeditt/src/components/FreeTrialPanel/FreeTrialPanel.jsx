@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { useGlobalContext } from "@/components/GlobalContext/GlobalContext";
 
 const FreeTrialPanel = ({ isPanelOpen, togglePanel }) => {
+  const { auth } = useGlobalContext();
+  const user = auth.state.user;
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
     service: "",
     images: 1,
     orderName: "",
     imageLinks: "",
     description: "",
   });
+
+  // Update form when user changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      phone: user?.phone || "", // Ensure phone is included
+    }));
+  }, [user]);
 
   const [errors, setErrors] = useState({});
 

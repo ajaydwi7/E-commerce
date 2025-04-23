@@ -10,6 +10,9 @@ function UserDetail() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [orders, setOrders] = useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -17,23 +20,23 @@ function UserDetail() {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        setLoading(true)
-        const userData = await fetchUserById(userId)
-        setUser(userData)
+        setLoading(true);
+        const userData = await fetchUserById(userId);
+        setUser(userData);
 
-        // Fetch user's orders
-        const ordersData = await fetchOrdersByUser(userId)
-        setOrders(ordersData)
+        // Fetch orders with pagination
+        const ordersData = await fetchOrdersByUser(userId, currentPage, itemsPerPage);
+        setOrders(ordersData.orders);
+        setTotalPages(ordersData.totalPages);
 
-        setLoading(false)
+        setLoading(false);
       } catch (err) {
-        setError(err.message)
-        setLoading(false)
+        setError(err.message);
+        setLoading(false);
       }
-    }
-
-    loadUserData()
-  }, [userId])
+    };
+    loadUserData();
+  }, [userId, currentPage, itemsPerPage]);
 
   const handleDeleteUser = async () => {
     try {
@@ -134,19 +137,25 @@ function UserDetail() {
               <h2 className="text-lg font-medium text-gray-900 mb-4">User Information</h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Username</p>
-                  <p className="mt-1 text-sm text-gray-900">{user.username}</p>
+                  <p className="text-sm font-medium text-gray-500">Full Name</p>
+                  <p className="mt-1 text-sm text-gray-900">{user.firstName} {user.lastName}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Email</p>
                   <p className="mt-1 text-sm text-gray-900">{user.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Created At</p>
+                  <p className="text-sm font-medium text-gray-500">Phone</p>
+                  <p className="mt-1 text-sm text-gray-900">{user.phone}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Address</p>
                   <p className="mt-1 text-sm text-gray-900">
-                    {user.createdAt ? new Date(user.createdAt).toLocaleString() : "N/A"}
+                    {user.address?.streetNumber} {user.address?.streetName}<br />
+                    {user.address?.city}, {user.address?.state} {user.address?.postalCode} {user.address?.country}
                   </p>
                 </div>
+                {/* Add more fields as needed */}
               </div>
             </div>
             <div>
@@ -215,7 +224,7 @@ function UserDetail() {
                 {orders.map((order) => (
                   <tr key={order._id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{order._id.substring(0, 8)}...</div>
+                      <div className="text-sm font-medium text-gray-900">{order.customOrderId}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</div>
@@ -245,6 +254,22 @@ function UserDetail() {
                 ))}
               </tbody>
             </table>
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-4">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

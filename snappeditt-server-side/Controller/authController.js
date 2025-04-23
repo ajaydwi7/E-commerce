@@ -14,12 +14,20 @@ const authController = {
   register: async (req, res) => {
     try {
       const { email, password, firstName, lastName, phone } = req.body;
+
+      // Check for existing email first
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email already registered" });
+      }
+
       const user = await User.create({
         firstName,
         lastName,
         phone,
         email,
         password,
+        address: {},
       });
       const token = createToken(user._id);
       res.cookie("userToken", token, {
@@ -47,13 +55,17 @@ const authController = {
       res.status(201).json({
         user: {
           id: user._id,
-          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
         },
       });
     } catch (error) {
-      res.status(400).json({
-        error: error.message,
-      });
+      // Handle MongoDB duplicate error
+      if (error.code === 11000) {
+        return res.status(400).json({ error: "Email already registered" });
+      }
+      res.status(400).json({ error: error.message });
     }
   },
   login: async (req, res) => {
@@ -70,7 +82,9 @@ const authController = {
       res.status(200).json({
         user: {
           id: user._id,
-          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
         },
       });
     } catch (error) {

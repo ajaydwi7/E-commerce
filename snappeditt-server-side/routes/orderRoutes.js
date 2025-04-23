@@ -26,6 +26,6 @@ router.post("/cancel", cancelOrder);
 
 // Route to fetch a single order by ID
 router.get("/:orderId", getOrderById);
-router.get("/:orderId/invoice", getOrderInvoice);
+router.get("/invoice/:invoiceNumber", getOrderInvoice);
 
 module.exports = router;
