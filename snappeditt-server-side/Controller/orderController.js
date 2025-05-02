@@ -13,6 +13,9 @@ const fs = require("fs");
 
 // Confirm order
 const confirmOrder = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  let captureDetails = null;
   const {
     user_id,
     items,
@@ -38,18 +41,18 @@ const confirmOrder = async (req, res) => {
 
     // Add conditional PayPal validation
     if (totalCost > 0) {
-      try {
-        // Verify with PayPal API
-        const request = new paypal.orders.OrdersGetRequest(paypalOrderId);
-        const response = await client.execute(request);
+      const request = new paypal.orders.OrdersGetRequest(paypalOrderId);
+      const response = await client.execute(request);
+      const paypalOrder = response.result;
 
-        if (response.result.status !== "COMPLETED") {
-          return res.status(400).json({ error: "Payment not completed" });
-        }
-      } catch (error) {
-        console.error("Payment verification failed:", error);
-        return res.status(400).json({ error: "Payment verification failed" });
+      if (paypalOrder.status !== "COMPLETED") {
+        return res.status(400).json({ error: "Payment not completed" });
       }
+
+      captureDetails = {
+        id: paypalOrder.purchase_units[0].payments.captures[0].id,
+        amount: parseFloat(paypalOrder.purchase_units[0].amount.value),
+      };
     }
 
     if (totalCost === 0 && paypalOrderId) {
@@ -114,6 +117,10 @@ const confirmOrder = async (req, res) => {
       })),
       status: "Pending",
       paymentStatus: totalCost > 0 ? "Completed" : "Pending",
+      ...(captureDetails && {
+        captureId: captureDetails.id,
+        capturedAmount: captureDetails.amount,
+      }),
     });
     // Only add paypalOrderId for paid orders
     if (totalCost > 0) {
@@ -122,7 +129,7 @@ const confirmOrder = async (req, res) => {
 
     const newOrder = new ServiceOrder(orderPayload);
 
-    await newOrder.save();
+    await newOrder.save({ session });
     // Generate invoice
     const user = await User.findById(user_id);
     const invoicePath = await generateInvoice(newOrder, user);
@@ -148,6 +155,7 @@ const confirmOrder = async (req, res) => {
         );
       })
     );
+    await session.commitTransaction();
 
     res.status(200).json({
       success: true,
@@ -161,10 +169,105 @@ const confirmOrder = async (req, res) => {
       },
       // order: updatedOrder.toObject(),
     });
+    await session.commitTransaction();
   } catch (error) {
     console.error("Order Error:", error);
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+    if (captureDetails) {
+      try {
+        const refundRequest = new paypal.payments.CapturesRefundRequest(
+          captureDetails.id
+        );
+        refundRequest.requestBody({
+          amount: {
+            value: captureDetails.amount.toFixed(2),
+            currency_code: "USD",
+          },
+          note_to_payer: "Automatic refund due to processing error",
+        });
+
+        const refundResponse = await client.execute(refundRequest);
+
+        await ServiceOrder.findOneAndUpdate(
+          { captureId: captureDetails.id },
+          {
+            paymentStatus: "Refunded",
+            refundId: refundResponse.result.id,
+            refundAttempts: 1,
+            lastRefundAttempt: new Date(),
+          }
+        );
+      } catch (refundError) {
+        console.error("Automatic refund failed:", refundError);
+        await ServiceOrder.findOneAndUpdate(
+          { captureId: captureDetails.id },
+          {
+            paymentStatus: "Failed",
+            refundAttempts: 1,
+            lastRefundAttempt: new Date(),
+          }
+        );
+      }
+    }
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "Order processing failed",
+        refundAttempted: !!captureDetails,
+      });
+    }
+  } finally {
+    // Always end session
+    session.endSession();
+  }
+};
+
+const initiateRefund = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { reason } = req.body;
+
+    const order = await ServiceOrder.findById(orderId);
+
+    if (!order) return res.status(404).json({ error: "Order not found" });
+    if (order.paymentStatus !== "Completed") {
+      return res
+        .status(400)
+        .json({ error: "Refund not allowed for this order status" });
+    }
+
+    const refundRequest = new paypal.payments.CapturesRefundRequest(
+      order.captureId
+    );
+    refundRequest.requestBody({
+      amount: {
+        value: order.capturedAmount.toFixed(2),
+        currency_code: "USD",
+      },
+      note_to_payer: reason || "Customer requested refund",
+    });
+
+    const refundResponse = await client.execute(refundRequest);
+
+    order.paymentStatus =
+      refundResponse.result.status === "COMPLETED" ? "Refunded" : "Failed";
+    order.refundId = refundResponse.result.id;
+    order.refundAttempts += 1;
+    order.lastRefundAttempt = new Date();
+    order.refundReason = reason;
+    await order.save();
+
+    res.json({
+      status: order.paymentStatus,
+      refundId: order.refundId,
+      amount: order.capturedAmount,
+    });
+  } catch (error) {
+    console.error("Refund error:", error);
     res.status(500).json({
-      error: "Order processing failed",
+      error: "Refund processing failed",
       details:
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
@@ -328,6 +431,7 @@ const getOrderById = async (req, res) => {
 
 module.exports = {
   confirmOrder,
+  initiateRefund,
   getAllOrders,
   getOrdersByUser,
   cancelOrder,

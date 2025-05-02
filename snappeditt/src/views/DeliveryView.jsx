@@ -20,7 +20,6 @@ const DeliveryView = () => {
         await orders.fetchOrders(auth.state.user.id, currentPage);
         setLoadingOrders(false);
       } else {
-        modal.openModal(false);
         setLoadingOrders(false);
       }
     };

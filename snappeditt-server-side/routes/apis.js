@@ -1,6 +1,7 @@
 const express = require("express");
 const authController = require("../Controller/authController");
 const checkAuth = require("../middleware/checkAuth");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const rateLimit = require("express-rate-limit");
 
@@ -14,32 +15,40 @@ const router = express.Router();
 // Auth Routes
 router.post("/register", authLimiter, authController.register);
 router.post("/login", authLimiter, authController.login);
-router.get("/me", checkAuth, async (req, res) => {
+router.get("/me", async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password").lean();
+    const token = req.cookies.userToken;
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (!token) {
+      return res.status(200).json({ user: null });
     }
 
-    // Add fresh user data
-    res.json({
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      address: user.address || {},
-    });
+    // Verify token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find user
+    const user = await User.findById(decodedToken.id)
+      .select("-password")
+      .lean();
+
+    res.status(200).json(
+      user
+        ? {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            address: user.address || {},
+          }
+        : { user: null }
+    );
   } catch (error) {
     console.error("ME Endpoint Error:", error);
-    res.status(500).json({
-      error: "Server error",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+    res.status(200).json({ user: null });
   }
 });
+
 router.post("/logout", authController.logout);
 
 // Add this route to your backend API routes

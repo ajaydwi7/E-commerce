@@ -54,7 +54,7 @@ const OrderSummary = () => {
 
   const proceedToCheckout = () => {
     if (!auth.state.user) {
-      modal.openModal();
+      navigate("/login");
       return;
     }
     // Ensure numeric conversion

@@ -123,40 +123,43 @@ exports.addToCart = async (req, res) => {
 };
 
 exports.updateCartQuantity = async (req, res) => {
-  const userId = req.user.id; // From authenticated user
-  const { serviceId, quantity } = req.body;
-
-  if (!userId || !serviceId || quantity < 1) {
-    return res.status(400).json({
-      error: "Invalid request. Provide valid service ID and quantity.",
-    });
-  }
+  const userId = req.user.id;
+  const { serviceId, quantity, selectedVariations } = req.body; // Add selectedVariations
 
   try {
-    let cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
 
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
+    // Find item by serviceId AND variation combination
+    const itemIndex = cart.items.findIndex((cartItem) => {
+      // Check service ID match
+      const sameService = cartItem.serviceId.toString() === serviceId;
 
-    const itemIndex = cart.items.findIndex(
-      (cartItem) => cartItem.serviceId.toString() === serviceId
-    );
+      // Check variations (sorted to ignore order)
+      const existingVariations = cartItem.selectedVariations
+        .map((v) => v.optionId.toString())
+        .sort()
+        .join("-");
 
-    if (itemIndex === -1) {
-      return res.status(404).json({ error: "Item not found in cart" });
-    }
+      const newVariations = selectedVariations
+        .map((v) => v.optionId.toString())
+        .sort()
+        .join("-");
+
+      return sameService && existingVariations === newVariations;
+    });
+
+    if (itemIndex === -1)
+      return res.status(404).json({ error: "Item not found" });
 
     // Update quantity
     cart.items[itemIndex].quantity = quantity;
 
-    // Recalculate cart total
+    // Recalculate totals
     cart.cartTotal = cart.items.reduce(
-      (total, item) =>
-        total + (item.finalPrice ?? item.basePrice) * item.quantity,
+      (total, item) => total + item.finalPrice * item.quantity,
       0
     );
-
     cart.cartQuantity = cart.items.reduce(
       (total, item) => total + item.quantity,
       0
@@ -165,8 +168,8 @@ exports.updateCartQuantity = async (req, res) => {
     await cart.save();
     res.status(200).json(cart);
   } catch (error) {
-    console.error("Error updating cart quantity:", error);
-    res.status(500).json({ error: "Failed to update cart quantity" });
+    console.error("Error updating cart:", error);
+    res.status(500).json({ error: "Failed to update cart" });
   }
 };
 

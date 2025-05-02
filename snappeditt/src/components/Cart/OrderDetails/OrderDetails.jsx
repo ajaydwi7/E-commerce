@@ -25,7 +25,7 @@ const OrderDetails = ({ service }) => {
     const parsed = Math.max(1, parseInt(inputValue) || currentQuantity);
     setInputValue(parsed.toString());
     setCurrentQuantity(parsed);
-    updateCartQuantity(service.serviceId, parsed);
+    updateCartQuantity(service.serviceId, parsed, service.selectedVariations); // Pass variations
   };
 
   const handleRemove = () => {

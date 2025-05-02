@@ -104,7 +104,11 @@ const useServiceStore = (auth) => {
     }
   };
 
-  const updateCartQuantity = async (serviceId, quantity) => {
+  const updateCartQuantity = async (
+    serviceId,
+    quantity,
+    selectedVariations
+  ) => {
     dispatch({ type: actions.SET_LOADING, payload: true });
     try {
       const response = await fetch(
@@ -113,13 +117,13 @@ const useServiceStore = (auth) => {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ serviceId, quantity }),
+          body: JSON.stringify({ serviceId, quantity, selectedVariations }), // Include variations
         }
       );
 
       if (!response.ok) throw new Error("Failed to update quantity");
-
       const data = await response.json();
+      toast.success("Cart updated successfully!");
       dispatch({
         type: actions.ADD_TO_CART,
         payload: {
@@ -128,7 +132,6 @@ const useServiceStore = (auth) => {
           cartQuantity: data.cartQuantity,
         },
       });
-      toast.success("Cart updated!");
     } catch (error) {
       toast.error(error.message);
       dispatch({ type: actions.SET_LOADING, payload: false });

@@ -3,7 +3,7 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 
 const PayPalButton = ({ cartTotal, cartItems, onSuccess, disabled, userId, billingDetails, couponCode, discount }) => {
-  const createOrder = async () => {
+  const createOrder = async (data, actions) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
       // Convert to number first before formatting
@@ -87,30 +87,39 @@ const PayPalButton = ({ cartTotal, cartItems, onSuccess, disabled, userId, billi
         };
 
 
-        const saveOrderResponse = await fetch(`${apiUrl}/order/confirm`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderDetails),
-          credentials: "include",
-        });
+        if (captureData.status === "COMPLETED") {
+          const saveOrderResponse = await fetch(`${apiUrl}/order/confirm`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Idempotency-Key": data.orderID
+            },
+            body: JSON.stringify(orderDetails),
+            credentials: "include",
+          });
 
+          if (!saveOrderResponse.ok) {
+            const errorData = await saveOrderResponse.json();
+            let message = "Payment succeeded but order creation failed";
 
-        if (!saveOrderResponse.ok) {
-          const errorData = await saveOrderResponse.json();
-          throw new Error(errorData.error || "Failed to save order to database");
+            if (errorData.refundAttempted) {
+              message += errorData.refundStatus === "Refunded"
+                ? ". Full refund processed successfully"
+                : ". Failed to process refund - contact support";
+            }
+
+            throw new Error(message);
+          }
+
+          const savedOrderData = await saveOrderResponse.json(); // Get saved order data
+          toast.success("Payment successful! Order has been placed.");
+          await onSuccess(savedOrderData); // Pass saved order data to onSuccess
         }
-
-        const savedOrderData = await saveOrderResponse.json(); // Get saved order data
-        toast.success("Payment successful! Order has been placed.");
-        await onSuccess(savedOrderData); // Pass saved order data to onSuccess
       }
-    } catch (error) {
-      console.error("Full PayPal capture error:", error);
-      toast.error(
-        error.message.includes("validation")
-          ? "Order validation failed: Check your item configurations"
-          : "Payment succeeded but order creation failed. Contact support."
-      );
+    }
+    catch (error) {
+      console.error("Payment processing error:", error);
+      toast.error(error.message || "Payment processing failed");
     }
   };
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   cancelOrder,
+  initiateRefund,
   getOrdersByUser,
   confirmOrder,
   getAllOrders,
@@ -14,6 +15,8 @@ const router = express.Router();
 
 // Route to confirm an order
 router.post("/confirm", confirmOrder);
+
+router.post("/:orderId/refund", initiateRefund);
 
 // Route to fetch all orders (Admin or authorized user)
 router.get("/get-all-orders", getAllOrders);

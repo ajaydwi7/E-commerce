@@ -38,25 +38,25 @@ const useAuth = () => {
         credentials: "include",
       });
 
-      if (response.status === 401) {
-        dispatch({ type: actions.LOGOUT });
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Session check failed");
-      }
-
       const userData = await response.json();
-      dispatch({ type: actions.SET_USER, payload: userData });
+
+      // Check for user data instead of status code
+      if (userData && userData.id) {
+        dispatch({ type: actions.SET_USER, payload: userData });
+        return true;
+      } else {
+        dispatch({ type: actions.LOGOUT });
+        return false;
+      }
     } catch (error) {
       console.error("Session Check Error:", error);
       dispatch({ type: actions.LOGOUT });
+      return false;
     } finally {
       dispatch({ type: actions.SET_LOADING, payload: false });
     }
   };
+
   const register = async (userInfo) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/register`, {

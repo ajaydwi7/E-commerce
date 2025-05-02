@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const routes = require("./routes/apis");
+const setupRefundRetries = require("./utils/refundRetry");
 const paymentRoutes = require("./routes/paymentRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
@@ -30,10 +31,9 @@ mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("Connected to MongoDB");
+    setupRefundRetries();
   })
-  .catch((err) => {
-    console.log("Error: ", err);
-  });
+  .catch((err) => console.error("Connection error:", err));
 
 const ensureUploadsDir = () => {
   const dir = "./uploads";
@@ -47,8 +47,9 @@ ensureUploadsDir();
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const allowedOrigins = [
-  "http://localhost:5173", // Frontend dev server
-  "http://localhost:3000", // Backend in development
+  // Frontend dev server
+  "http://localhost:3000",
+  "http://localhost:5173", // Backend in development
   process.env.FRONTEND_URL,
 ];
 
@@ -57,7 +58,7 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
     methods: "GET,POST,PUT,DELETE,PATCH",
-    allowedHeaders: "Content-Type,Authorization",
+    allowedHeaders: "Content-Type,Authorization, Idempotency-Key",
   })
 );
 
