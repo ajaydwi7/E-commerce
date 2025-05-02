@@ -28,18 +28,30 @@ const UserSchema = new Schema(
       isoCode: String, // Country ISO code
       stateCode: String, // State ISO code
     },
+    passwordChangedAt: Date,
+    passwordResetExpires: Date,
     resetToken: String,
     resetTokenExpiration: Date,
   },
   { timestamps: true }
 );
 
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ resetToken: 1 });
+
 // Before save encrypt password
 
 UserSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  if (!this.isModified("password")) return next();
+
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    this.passwordChangedAt = Date.now();
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Static method to login user

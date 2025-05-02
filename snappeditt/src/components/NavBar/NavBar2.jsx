@@ -39,6 +39,11 @@ const NavBar2 = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
+  useEffect(() => {
+    auth.checkSession();
+  }, []);
+
   const services = [
     "Real-Estate",
     "Floor Plan",

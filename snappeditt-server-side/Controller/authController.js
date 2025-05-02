@@ -15,7 +15,11 @@ const authController = {
     try {
       const { email, password, firstName, lastName, phone } = req.body;
 
-      // Check for existing email first
+      // Validate required fields
+      if (!email || !password || !firstName || !lastName || !phone) {
+        return res.status(400).json({ error: "All fields are required" });
+      }
+
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ error: "Email already registered" });
@@ -29,39 +33,16 @@ const authController = {
         password,
         address: {},
       });
-      const token = createToken(user._id);
-      res.cookie("userToken", token, {
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "None",
-        secure: true,
-      });
-      // Notify admins
-      const admins = await Admin.find({
-        roles: { $in: ["super-admin", "support"] },
-      });
 
-      await Promise.all(
-        admins.map(async (admin) => {
-          await createNotification(
-            admin._id,
-            "user",
-            `New user registered: ${user.email}`,
-            user._id,
-            "User"
-          );
-        })
-      );
+      // Don't login automatically - just send success
       res.status(201).json({
+        message: "Registration successful",
         user: {
           id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
           email: user.email,
         },
       });
     } catch (error) {
-      // Handle MongoDB duplicate error
       if (error.code === 11000) {
         return res.status(400).json({ error: "Email already registered" });
       }
@@ -76,8 +57,9 @@ const authController = {
       res.cookie("userToken", token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "None",
-        secure: true,
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+        secure: process.env.NODE_ENV === "production",
+        // Remove domain setting for development
       });
       res.status(200).json({
         user: {

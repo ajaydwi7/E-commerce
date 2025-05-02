@@ -16,7 +16,9 @@ const ServicePage = () => {
   const [error, setError] = useState("");
   const [activeSlider, setActiveSlider] = useState(0);
   const [selectedVariations, setSelectedVariations] = useState({});
-  const [formData, setFormData] = useState({ quantity: 1 });
+  const [formData, setFormData] = useState({
+    quantity: service?.quantity?.toString() || "1" // Start with string
+  });
   const [formConfig, setFormConfig] = useState([]);
 
   const { serviceStore } = useGlobalContext();
@@ -162,56 +164,63 @@ const ServicePage = () => {
     );
   };
   const handleAddToCart = () => {
-    if (!service) return;
+    try {
+      if (!service) return;
 
-    // Validate required variations (including auto-selected ones)
-    const requiredVariations = service.variationTypes.filter(vt => vt.required);
-    const missingVariations = requiredVariations.some(vt => {
-      const hasSelection = selectedVariations[vt.name] ||
-        (vt.options.length === 1 && vt.required);
-      return !hasSelection;
-    });
+      // Validate required variations (including auto-selected ones)
+      const requiredVariations = service.variationTypes.filter(vt => vt.required);
+      const missingVariations = requiredVariations.some(vt => {
+        const hasSelection = selectedVariations[vt.name] ||
+          (vt.options.length === 1 && vt.required);
+        return !hasSelection;
+      });
 
-    if (missingVariations) {
-      toast.error("Please select all required options");
-      return;
-    }
-
-    // Validate form data
-    const missingFormFields = formConfig
-      .filter(field => field.required)
-      .some(field => !formData[field.name]);
-
-    if (missingFormFields) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-
-    // Prepare cart item with all selections
-    const finalSelections = { ...selectedVariations };
-    service.variationTypes?.forEach(vt => {
-      if (vt.options.length === 1 && vt.required) {
-        finalSelections[vt.name] = vt.options[0];
+      if (missingVariations) {
+        toast.error("Please select all required options");
+        return;
       }
-    });
 
-    const cartItem = {
-      serviceId: service._id,
-      serviceName: service.name,
-      basePrice: service.basePrice,
-      finalPrice: calculatePrice(),
-      quantity: parseInt(formData.quantity),
-      featureImage: service.featureImage,
-      selectedVariations: Object.entries(finalSelections).map(([type, option]) => ({
-        variationType: type,
-        optionId: option._id,
-        optionName: option.name
-      })),
-      formData: formData,
-    };
+      // Validate form data
+      const missingFormFields = formConfig
+        .filter(field => field.required)
+        .some(field => !formData[field.name]);
 
-    addToCart(cartItem);
-    toast.success(`${service.name} added to cart!`);
+      if (missingFormFields) {
+        toast.error("Please fill all required fields");
+        return;
+      }
+
+      // Prepare cart item with all selections
+      const finalSelections = { ...selectedVariations };
+      service.variationTypes?.forEach(vt => {
+        if (vt.options.length === 1 && vt.required) {
+          finalSelections[vt.name] = vt.options[0];
+        }
+      });
+      const quantity = Math.max(1, parseInt(formData.quantity) || 1);
+      const cartItem = {
+        serviceId: service._id,
+        serviceName: service.name,
+        categorySlug: categorySlug,
+        serviceSlug: serviceSlug,
+        basePrice: service.basePrice,
+        finalPrice: calculatePrice(),
+        quantity: quantity,
+        featureImage: service.featureImage,
+        selectedVariations: Object.entries(finalSelections).map(([type, option]) => ({
+          variationType: type,
+          optionId: option._id,
+          optionName: option.name
+        })),
+        formData: formData,
+
+      };
+
+      addToCart(cartItem);
+      toast.success(`${service.name} added to cart!`);
+    } catch (error) {
+      toast.error("Failed to add to cart. Please try again.");
+    }
   };
 
   const isInCart = cart?.some(item => item.serviceId === service?._id);
@@ -431,8 +440,21 @@ const ServicePage = () => {
                 type="number"
                 name="quantity"
                 min="1"
-                value={formData.quantity || 1}
-                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                value={formData.quantity}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  setFormData(prev => ({
+                    ...prev,
+                    quantity: value || ""
+                  }));
+                }}
+                onBlur={(e) => {
+                  const parsed = Math.max(1, parseInt(e.target.value) || 1);
+                  setFormData(prev => ({
+                    ...prev,
+                    quantity: parsed.toString()
+                  }));
+                }}
                 className="w-20 p-2 border text-md text-center border-black"
                 required
               />

@@ -4,7 +4,8 @@ import SEO from '../SEO/SEO';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '@/components/GlobalContext/GlobalContext';
 import { Link } from 'react-router-dom';
-import { FaSignInAlt, FaGoogle, FaGithub } from 'react-icons/fa';
+import { FaSignInAlt } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const SignIn = () => {
   const { auth } = useGlobalContext();
@@ -22,14 +23,13 @@ const SignIn = () => {
     setIsLoading(true);
     try {
       await auth.login(formData);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primaryRed to-blue-50 flex items-center justify-center p-4">

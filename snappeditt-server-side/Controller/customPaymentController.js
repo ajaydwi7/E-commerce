@@ -170,4 +170,131 @@ const captureCustomPayment = async (req, res) => {
       .json({ error: "Payment capture failed", details: error.message });
   }
 };
-module.exports = { createCustomOrder, createPayPalOrder, captureCustomPayment };
+
+// Get all custom orders
+// Get all custom orders with pagination
+const getAllCustomOrders = async (req, res) => {
+  try {
+    const page = Number.parseInt(req.query.page) || 1;
+    const limit = Number.parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Build filter object based on query parameters
+    const filter = {};
+
+    if (req.query.status) {
+      filter["payment.status"] = req.query.status;
+    }
+
+    if (req.query.type) {
+      filter.serviceType = req.query.type;
+    }
+
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      filter.$or = [
+        { customOrderId: searchRegex },
+        { "userDetails.fullName": searchRegex },
+        { "userDetails.email": searchRegex },
+      ];
+    }
+
+    // Get total count for pagination metadata
+    const totalCount = await CustomServiceOrder.countDocuments(filter);
+
+    // Get paginated orders
+    const orders = await CustomServiceOrder.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
+    res.status(200).json({
+      success: true,
+      orders,
+      pagination: {
+        totalCount,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching custom orders:", error);
+    res.status(500).json({ error: "Failed to fetch custom orders" });
+  }
+};
+
+// Get custom order by ID
+const getCustomOrderById = async (req, res) => {
+  try {
+    const order = await CustomServiceOrder.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ error: "Custom order not found" });
+    }
+    res.status(200).json({ success: true, order });
+  } catch (error) {
+    console.error("Error fetching custom order:", error);
+    res.status(500).json({ error: "Failed to fetch custom order" });
+  }
+};
+
+// Update custom order status
+const updateCustomOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (
+      !status ||
+      !["draft", "pending", "completed", "failed"].includes(status)
+    ) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    const order = await CustomServiceOrder.findByIdAndUpdate(
+      req.params.id,
+      { "payment.status": status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ error: "Custom order not found" });
+    }
+
+    res.status(200).json({ success: true, order });
+  } catch (error) {
+    console.error("Error updating custom order status:", error);
+    res.status(500).json({ error: "Failed to update custom order status" });
+  }
+};
+
+// Delete custom order
+const deleteCustomOrder = async (req, res) => {
+  try {
+    const order = await CustomServiceOrder.findByIdAndDelete(req.params.id);
+    if (!order) {
+      return res.status(404).json({ error: "Custom order not found" });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Custom order deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting custom order:", error);
+    res.status(500).json({ error: "Failed to delete custom order" });
+  }
+};
+
+module.exports = {
+  createCustomOrder,
+  createPayPalOrder,
+  captureCustomPayment,
+  getAllCustomOrders,
+  getCustomOrderById,
+  updateCustomOrderStatus,
+  deleteCustomOrder,
+};

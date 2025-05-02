@@ -26,6 +26,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
     { name: "Dashboard", path: "/admin", icon: HomeIcon },
     { name: "Users", path: "/admin/users", icon: UserIcon },
     { name: "Orders", path: "/admin/orders", icon: ShoppingCartIcon },
+    { name: "Custom Orders", path: "/admin/custom-orders", icon: DocumentTextIcon },
     { name: "Services", path: "/admin/services", icon: CubeIcon },
     { name: "Categories", path: "/admin/categories", icon: TagIcon },
     { name: "Coupons", path: "/admin/coupons", icon: TicketIcon },

@@ -1,9 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import * as contactApi from "../api/contactApi"
-import { SearchIcon, FilterIcon, CheckIcon, TrashIcon, PencilIcon } from "../components/Icons"
+import {
+  SearchIcon,
+  FilterIcon,
+  CheckIcon,
+  TrashIcon,
+  PencilIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "../components/Icons"
 
 function ContactFormManagement() {
   const [contactForms, setContactForms] = useState([])
@@ -14,15 +22,16 @@ function ContactFormManagement() {
   const [dateFilter, setDateFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const [limit, setLimit] = useState(10)
 
-  useEffect(() => {
-    fetchContactForms()
-  }, [statusFilter, dateFilter, currentPage])
-
-  const fetchContactForms = async () => {
+  const fetchContactForms = useCallback(async () => {
     try {
       setLoading(true)
-      const filters = {}
+      const filters = {
+        page: currentPage,
+        limit,
+      }
 
       if (statusFilter !== "all") {
         filters.status = statusFilter
@@ -32,17 +41,20 @@ function ContactFormManagement() {
         filters.dateRange = dateFilter
       }
 
-      filters.page = currentPage
-
       const data = await contactApi.getAllContactForms(filters)
       setContactForms(data.forms || [])
       setTotalPages(data.totalPages || 1)
+      setTotalCount(data.totalCount || 0)
     } catch (err) {
       setError(err.message || "Failed to fetch contact forms")
     } finally {
       setLoading(false)
     }
-  }
+  }, [currentPage, limit, statusFilter, dateFilter])
+
+  useEffect(() => {
+    fetchContactForms()
+  }, [fetchContactForms])
 
   const handleStatusChange = async (formId, newStatus) => {
     try {
@@ -62,6 +74,29 @@ function ContactFormManagement() {
         setError(err.message || "Failed to delete contact form")
       }
     }
+  }
+
+  const handleLimitChange = (e) => {
+    setLimit(Number.parseInt(e.target.value))
+    setCurrentPage(1) // Reset to first page when changing items per page
+  }
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value)
+    setCurrentPage(1) // Reset to first page when changing filter
+  }
+
+  const handleDateFilterChange = (e) => {
+    setDateFilter(e.target.value)
+    setCurrentPage(1) // Reset to first page when changing filter
   }
 
   const filteredForms = contactForms.filter((form) => {
@@ -119,7 +154,7 @@ function ContactFormManagement() {
                   type="text"
                   placeholder="Search by name, email, or topic..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={handleSearchChange}
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full md:w-80"
                 />
                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -129,7 +164,7 @@ function ContactFormManagement() {
                 <div className="relative">
                   <select
                     value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
+                    onChange={handleStatusFilterChange}
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="all">All Statuses</option>
@@ -144,7 +179,7 @@ function ContactFormManagement() {
                 <div className="relative">
                   <select
                     value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
+                    onChange={handleDateFilterChange}
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="all">All Time</option>
@@ -262,30 +297,47 @@ function ContactFormManagement() {
               </tbody>
             </table>
           </div>
+        </div>
 
-          {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                Page {currentPage} of {totalPages}
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
+        {/* Pagination Controls */}
+        <div className="px-6 py-4 bg-white border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center rounded-lg shadow-md">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <span className="text-sm text-gray-700 mr-2">Rows per page:</span>
+            <select
+              value={limit}
+              onChange={handleLimitChange}
+              className="rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+
+          <div className="flex items-center">
+            <span className="text-sm text-gray-700 mr-4">
+              Page {currentPage} of {totalPages} ({totalCount} items)
+            </span>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeftIcon className="h-4 w-4 mr-1" />
+                Prev
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <ChevronRightIcon className="h-4 w-4 ml-1" />
+              </button>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
@@ -293,4 +345,3 @@ function ContactFormManagement() {
 }
 
 export default ContactFormManagement
-

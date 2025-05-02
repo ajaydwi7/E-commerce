@@ -10,7 +10,9 @@ function ThreeDdServicesView() {
     heading: "3D Services",
     description: "Snapp Editt specialize in creating high quality Architectural 3D Rendering Services, Interior Rendering and 3D floor plans – delivered quickly, and cost effectively. We bring your vision to life! Our team will help you to put your imagination into practical mock-up with the help of 3D realistic rendering.",
     buttons: [
-      { title: "Learn How Can We Help You" }
+      {
+        title: "Learn How Can We Help You", url: "#three-d-services",
+      }
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -40,7 +42,7 @@ function ThreeDdServicesView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="three-d-services">
           <OfferServices />
         </section>
         <section>

@@ -11,7 +11,11 @@ function WeddingEventsView() {
     heading: "Wedding & Events",
     description: "Are you unable to deliver photos to clients due to back-to-back shoots in this wedding season? You can enroll in our online Wedding services where our editors will cull-edit images matching exactly your studio style with a quick turnaround time (24-48 hours).",
     buttons: [
-      { title: "Learn How Can We Help You" }
+      {
+        title: "Learn How Can We Help You",
+        url: "#wedding-packages",
+      },
+
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -41,7 +45,7 @@ function WeddingEventsView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="wedding-packages">
           <PackagesWeddingEvents />
         </section>
         <section>

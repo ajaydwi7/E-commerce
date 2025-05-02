@@ -8,8 +8,8 @@ const globalContext = createContext();
 export const useGlobalContext = () => useContext(globalContext);
 
 const GlobalContext = ({ children }) => {
-  const serviceStore = useServiceStore(); // Initialize the service store
   const auth = useAuth();
+  const serviceStore = useServiceStore(auth); // Initialize the service store
   const orders = useOrderStore(); // Initialize the order store
 
   return (

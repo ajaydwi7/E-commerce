@@ -10,7 +10,10 @@ function PeopleRetouchingView() {
     heading: "People Retouching",
     description: "In this service, we primarily focus on enhancing the person’s image by keeping the true colors and natural tone of the skin. Our professional editors focus on editing the image more naturally rather than over retouching the image. This service is mostly used by photographers shooting Portrait, Headshots, Pregnancy, Baby, School, Sports, Fashion, Beauty, Advertising, Corporate Events, etc.",
     buttons: [
-      { title: "Learn How Can We Help You" }
+      {
+        title: "Learn How Can We Help You",
+        url: "#people-packages"
+      },
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -40,7 +43,7 @@ function PeopleRetouchingView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="people-packages">
           <PackagesPeopleRetouching />
         </section>
       </main>

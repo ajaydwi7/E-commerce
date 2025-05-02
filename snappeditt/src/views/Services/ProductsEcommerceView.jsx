@@ -9,7 +9,7 @@ function ProductECommerceView() {
     heading: "Products ~ eCommerce",
     description: "Photographers or Business owners who want to sell or showcase their products to improve customer’s buying experience can avail of this service. In this service, we offer products retouching, clipping path, deep etching, Extraction, Background removal/change, Composite Retouching, Ghost Mannequin, etc.",
     buttons: [
-      { title: "Learn How Can We Help You", url: "#" }
+      { title: "Learn How Can We Help You", url: "#commercial-packages" }
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -39,7 +39,7 @@ function ProductECommerceView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="commercial-packages">
           <PackagesECommerce />
         </section>
       </main>

@@ -7,7 +7,8 @@ import "./OrderDetails.css";
 const OrderDetails = ({ service }) => {
   const { serviceStore } = useGlobalContext();
   const { updateCartQuantity, removeFromCart } = serviceStore;
-  const [quantity, setQuantity] = useState(service.quantity);
+  const [inputValue, setInputValue] = useState(service.quantity.toString());
+  const [currentQuantity, setCurrentQuantity] = useState(service.quantity);
 
   // Construct the service URL
   const serviceUrl = `/services/${service.categorySlug}/${service.serviceSlug}`;
@@ -16,18 +17,22 @@ const OrderDetails = ({ service }) => {
   const finalPrice = service.finalPrice ?? service.basePrice;
 
   const handleQuantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value);
-    if (newQuantity >= 1) {
-      setQuantity(newQuantity);
-    }
+    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+    setInputValue(rawValue);
   };
 
   const handleUpdateQuantity = () => {
-    if (quantity < 1) return;
-    updateCartQuantity(service.serviceId, quantity);
+    const parsed = Math.max(1, parseInt(inputValue) || currentQuantity);
+    setInputValue(parsed.toString());
+    setCurrentQuantity(parsed);
+    updateCartQuantity(service.serviceId, parsed);
   };
 
   const handleRemove = () => {
+    if (!service.serviceId) {
+      console.error("Missing service ID for removal");
+      return;
+    }
     removeFromCart(service.serviceId);
   };
 
@@ -87,8 +92,17 @@ const OrderDetails = ({ service }) => {
           <input
             type="number"
             min="1"
-            value={quantity}
+            value={inputValue}
             onChange={handleQuantityChange}
+            onBlur={() => {
+              if (inputValue.trim() === "") {
+                setInputValue(currentQuantity.toString());
+                return;
+              }
+              const parsed = Math.max(1, parseInt(inputValue) || currentQuantity);
+              setInputValue(parsed.toString());
+              setCurrentQuantity(parsed);
+            }}
             className="w-16 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primaryRed text-center"
           />
           <button className="px-4 py-1 bg-primaryRed text-white font-medium rounded-md hover:bg-red-700 transition-all" onClick={handleUpdateQuantity}>

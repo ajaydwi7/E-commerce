@@ -4,17 +4,24 @@ const jwt = require("jsonwebtoken");
 
 const checkAuth = (req, res, next) => {
   const token = req.cookies.userToken;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if (err) {
-        res.status(401).json({ error: "Unauthorized" });
-      } else {
-        next();
-      }
-    });
-  } else {
-    res.status(401).json({ error: "Unauthorized" });
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    if (err) {
+      console.error("JWT Verify Error:", err);
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    if (!decodedToken?.id) {
+      return res.status(401).json({ error: "Malformed token" });
+    }
+
+    req.user = { id: decodedToken.id };
+    next();
+  });
 };
 
 module.exports = checkAuth;

@@ -3,12 +3,24 @@ const API_URL = `${import.meta.env.VITE_API_URL}/admin/contact`;
 
 export const getAllContactForms = async (filters = {}) => {
   try {
-    let queryString = "";
-    if (Object.keys(filters).length > 0) {
-      queryString = "?" + new URLSearchParams(filters).toString();
+    const queryParams = new URLSearchParams({
+      page: filters.page || 1,
+      limit: filters.limit || 10,
+    });
+
+    if (filters.status) {
+      queryParams.append("status", filters.status);
     }
 
-    const response = await fetch(`${API_URL}/forms${queryString}`, {
+    if (filters.dateRange) {
+      queryParams.append("dateRange", filters.dateRange);
+    }
+
+    if (filters.search) {
+      queryParams.append("search", filters.search);
+    }
+
+    const response = await fetch(`${API_URL}/forms?${queryParams.toString()}`, {
       credentials: "include",
     });
 

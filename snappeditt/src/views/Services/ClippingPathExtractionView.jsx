@@ -10,7 +10,7 @@ function ClippingPathExtractionView() {
     heading: "Clipping Path ~ Extraction",
     description: "Clipping Path is the most popular service enrolled by photographers is used to create a picture-perfect cut-out of the subject. Our expert’s Clip path by manually cutting out 2D images using Image Editing Software. It is most useful for eCommerce Products, Jewellery, Portraits, Sports, School, etc industry.",
     buttons: [
-      { title: "Learn How Can We Help You", url: "#" }
+      { title: "Learn How Can We Help You", url: "#clipping-path-packages" }
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -40,7 +40,7 @@ function ClippingPathExtractionView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="clipping-path-packages">
           <PackagesClippingPathExtraction />
         </section>
       </main>

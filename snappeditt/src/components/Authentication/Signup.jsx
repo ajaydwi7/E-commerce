@@ -26,11 +26,14 @@ const SignUp = () => {
       toast.error("Passwords do not match");
       return;
     }
+
     try {
-      await auth.register(formData);
-      navigate('/');
+      const success = await auth.register(formData);
+      if (success) {
+        navigate('/login', { replace: true });
+      }
     } catch (error) {
-      toast.error(error.message || "Registration failed");
+      toast.error(error.message || "Registration failed. Please try again.");
     }
   };
 

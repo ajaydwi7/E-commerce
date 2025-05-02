@@ -3,8 +3,8 @@ const Cart = require("../models/Cart");
 const Category = require("../models/Category");
 
 exports.addToCart = async (req, res) => {
-  const { userId, item } = req.body;
-
+  const userId = req.user.id; // From authenticated user
+  const { item } = req.body;
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({ error: "Invalid user ID format" });
   }
@@ -123,7 +123,8 @@ exports.addToCart = async (req, res) => {
 };
 
 exports.updateCartQuantity = async (req, res) => {
-  const { userId, serviceId, quantity } = req.body;
+  const userId = req.user.id; // From authenticated user
+  const { serviceId, quantity } = req.body;
 
   if (!userId || !serviceId || quantity < 1) {
     return res.status(400).json({
@@ -172,7 +173,7 @@ exports.updateCartQuantity = async (req, res) => {
 // Fetch user's cart
 exports.getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: req.params.userId });
+    const cart = await Cart.findOne({ user: req.user.id });
     res.status(200).json(cart || { items: [], cartTotal: 0, cartQuantity: 0 });
   } catch (error) {
     console.error("Error fetching cart:", error);
@@ -182,7 +183,8 @@ exports.getCart = async (req, res) => {
 
 // Remove item from cart
 exports.removeFromCart = async (req, res) => {
-  const { userId, serviceId } = req.body;
+  const userId = req.user.id; // From authenticated user
+  const { serviceId } = req.body;
 
   if (!userId || !serviceId) {
     return res
@@ -221,7 +223,7 @@ exports.removeFromCart = async (req, res) => {
 // Clear cart
 exports.clearCart = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user.id; // From authenticated user
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }

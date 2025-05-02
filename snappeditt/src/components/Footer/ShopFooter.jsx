@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "@/assets/images/SE-1.png";
 import FreeTrialPanel from "../FreeTrialPanel/FreeTrialPanel";
 import "./ShopFooter.css"
@@ -13,6 +14,10 @@ import {
 
 const ShopFooter = () => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleCreateAccount = () => {
+    navigate('/register'); // Navigate to register route
+  };
 
   const togglePanel = () => {
     setIsPanelOpen((prev) => !prev);
@@ -36,7 +41,10 @@ const ShopFooter = () => {
               Free Trial
             </button>
             <FreeTrialPanel isPanelOpen={isPanelOpen} togglePanel={togglePanel} />
-            <button className="cta-white bg-white text-black font-semibold py-2 px-6 rounded-full">
+            <button
+              onClick={handleCreateAccount}
+              className="cta-white bg-white text-black font-semibold py-2 px-6 rounded-full"
+            >
               Create Account
             </button>
           </div>

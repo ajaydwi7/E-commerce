@@ -47,30 +47,38 @@ ensureUploadsDir();
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const allowedOrigins = [
-  "http://localhost:5173", // Dev Frontend
+  "http://localhost:5173", // Frontend dev server
+  "http://localhost:3000", // Backend in development
   process.env.FRONTEND_URL,
-  "https://www.sandbox.paypal.com",
-  "https://api.sandbox.paypal.com", // Production Frontend
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,POST,PUT,DELETE,PATCH",
     allowedHeaders: "Content-Type,Authorization",
-    exposedHeaders: ["Set-Cookie"],
   })
 );
 
-// To handle preflight (OPTIONS) requests properly
-app.options("*", cors());
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     allowedHeaders: "Content-Type,Authorization",
+//     exposedHeaders: ["Set-Cookie"],
+//   })
+// );
+
+// // To handle preflight (OPTIONS) requests properly
+// app.options("*", cors());
 // initialize middleware
 app.use(bodyParser.json());
 
@@ -103,7 +111,6 @@ app._router.stack.forEach((middleware) => {
 // error handling middleware
 if (isProduction) {
   app.get("*", (_, res) => {
-    res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
     res.sendFile(path.resolve(_dirname, "snappeditt", "dist", "index.html"));
   });
 } else {

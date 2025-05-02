@@ -1,17 +1,30 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useAdmin } from "../contexts/AdminContext"
 import * as adminApi from "../api/adminApi"
-import { PlusIcon, PencilIcon, TrashIcon, ShieldCheckIcon } from "../components/Icons"
+import {
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  ShieldCheckIcon,
+  SearchIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "../components/Icons"
 
 function AdminManagement() {
   const { admin } = useAdmin()
   const [admins, setAdmins] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const [limit, setLimit] = useState(10)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editingAdmin, setEditingAdmin] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,31 +36,48 @@ function AdminManagement() {
   // Check if current admin is super-admin
   const isSuperAdmin = admin?.role === "super-admin"
 
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        setLoading(true)
-        const data = await adminApi.getAllAdmins()
-        if (Array.isArray(data)) {
-          setAdmins(data)
-        } else {
-          console.error("Expected array of admins but got:", data)
-          setAdmins([])
-        }
-      } catch (err) {
-        console.error("Error fetching admins:", err)
-        setError(err.message || "Failed to fetch admin users")
-      } finally {
-        setLoading(false)
-      }
-    }
+  const fetchAdmins = useCallback(async () => {
+    if (!isSuperAdmin) return
 
-    if (isSuperAdmin) {
-      fetchAdmins()
-    } else {
+    try {
+      setLoading(true)
+      const params = new URLSearchParams({
+        page: currentPage,
+        limit,
+        ...(searchTerm && { search: searchTerm }),
+      }).toString()
+
+      const data = await adminApi.getAllAdmins(currentPage, limit, searchTerm)
+      if (data.admins) {
+        setAdmins(data.admins)
+        setTotalPages(data.pagination?.totalPages || 1)
+        setTotalCount(data.pagination?.totalAdmins || 0)
+      }
+    } catch (err) {
+      console.error("Error fetching admins:", err)
+      setError(err.message || "Failed to fetch admin users")
+    } finally {
       setLoading(false)
     }
-  }, [isSuperAdmin])
+  }, [isSuperAdmin, currentPage, limit, searchTerm])
+
+  useEffect(() => {
+    fetchAdmins()
+  }, [fetchAdmins])
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const handleLimitChange = (e) => {
+    setLimit(Number(e.target.value))
+    setCurrentPage(1) // Reset to first page when changing items per page
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+    setCurrentPage(1) // Reset to first page when searching
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -111,7 +141,7 @@ function AdminManagement() {
         // Create new admin
         const newAdmin = await adminApi.createAdmin(formData)
         if (newAdmin && newAdmin._id) {
-          setAdmins([...admins, newAdmin])
+          fetchAdmins() // Refresh the list to include the new admin
           setShowForm(false)
           resetForm()
         } else {
@@ -133,7 +163,7 @@ function AdminManagement() {
     if (window.confirm("Are you sure you want to delete this admin? This action cannot be undone.")) {
       try {
         await adminApi.deleteAdmin(adminId)
-        setAdmins(admins.filter((a) => a._id !== adminId))
+        fetchAdmins() // Refresh the list after deletion
       } catch (err) {
         console.error("Admin deletion error:", err)
         setError(err.message || "Failed to delete admin")
@@ -190,7 +220,7 @@ function AdminManagement() {
     )
   }
 
-  if (loading) {
+  if (loading && admins.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
@@ -321,6 +351,22 @@ function AdminManagement() {
         </div>
       )}
 
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <SearchIcon className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search admins..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 pl-10"
+          />
+        </div>
+      </div>
+
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -423,9 +469,49 @@ function AdminManagement() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center mt-4 rounded-b-lg">
+        <div className="flex items-center mb-4 sm:mb-0">
+          <span className="text-sm text-gray-700 mr-2">Rows per page:</span>
+          <select
+            value={limit}
+            onChange={handleLimitChange}
+            className="rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div className="flex items-center">
+          <span className="text-sm text-gray-700 mr-4">
+            Page {currentPage} of {totalPages} ({totalCount} items)
+          </span>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeftIcon className="h-4 w-4 mr-1" />
+              Prev
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+              <ChevronRightIcon className="h-4 w-4 ml-1" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default AdminManagement
-

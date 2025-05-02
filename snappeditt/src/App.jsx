@@ -61,12 +61,24 @@ import ContactFormManagement from "./admin/pages/ContactFormManagement"
 import ContactFormDetail from "./admin/pages/ContactFormDetail"
 import FreeTrialManagement from "./admin/pages/FreeTrialManagement"
 import FreeTrialDetail from "./admin/pages/FreeTrialDetail"
+import CustomOrderManagement from "./admin/pages/CustomOrderManagement"
+import CustomOrderDetail from "./admin/pages/CustomOrderDetail"
+
 
 
 
 const ProtectedRoute = ({ children }) => {
   const { auth } = useGlobalContext();
-  return auth.state.user ? children : <Navigate to="/login" replace />;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!auth.state.loading && !auth.state.user) {
+      navigate('/login');
+    }
+  }, [auth.state.user, auth.state.loading, navigate]);
+
+  if (auth.state.loading) return <Loader />;
+  return auth.state.user ? children : null;
 };
 
 // Update ProtectedAdminRoute in App.jsx
@@ -207,6 +219,10 @@ function App() {
                 <Route path="orders">
                   <Route index element={<OrderManagement />} />
                   <Route path=":orderId" element={<OrderDetail />} />
+                </Route>
+                <Route path="custom-orders">
+                  <Route index element={<CustomOrderManagement />} />
+                  <Route path=":orderId" element={<CustomOrderDetail />} />
                 </Route>
 
                 {/* Coupon Management */}

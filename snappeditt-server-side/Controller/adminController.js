@@ -26,8 +26,20 @@ exports.createAdmin = async (req, res) => {
 
 exports.getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find().select("-password");
-    res.json(admins);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const [admins, total] = await Promise.all([
+      Admin.find().select("-password").skip(skip).limit(limit),
+      Admin.countDocuments(),
+    ]);
+
+    res.json({
+      admins,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -214,13 +226,28 @@ exports.deleteAdmin = async (req, res) => {
 // Contact Form Management
 exports.getAllContactForms = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10; // Items per page
+    const page = Number.parseInt(req.query.page) || 1;
+    const limit = Number.parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     // Build filters
     const filters = {};
-    if (req.query.status) filters.status = req.query.status;
+
+    // Status filter
+    if (req.query.status) {
+      filters.status = req.query.status;
+    }
+
+    // Search functionality
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      filters.$or = [
+        { firstName: searchRegex },
+        { lastName: searchRegex },
+        { email: searchRegex },
+        { topic: searchRegex },
+      ];
+    }
 
     // Date filtering
     if (req.query.dateRange) {
@@ -249,6 +276,7 @@ exports.getAllContactForms = async (req, res) => {
       forms: contactForms,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
+      totalCount: total,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -401,5 +429,56 @@ exports.addNoteToFreeTrial = async (req, res) => {
     res.json(trial);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const page = Number.parseInt(req.query.page) || 1;
+    const limit = Number.parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Build filters
+    const filters = {};
+
+    // Search functionality
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      filters.$or = [
+        { firstName: searchRegex },
+        { lastName: searchRegex },
+        { email: searchRegex },
+      ];
+    }
+
+    // Get users with pagination
+    const [users, total] = await Promise.all([
+      User.find(filters)
+        .select("-password")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments(filters),
+    ]);
+
+    res.json({
+      users,
+      pagination: {
+        totalUsers: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        limit,
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      error: "Failed to fetch users",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };

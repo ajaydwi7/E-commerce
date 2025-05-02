@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
 
 const DeliveryView = () => {
-  const { orders, auth, modal } = useGlobalContext();
+  const { orders, auth } = useGlobalContext();
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [disabled, setDisabled] = useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);

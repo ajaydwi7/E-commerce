@@ -10,7 +10,7 @@ function FloorPlanView() {
     heading: "Floor Plan",
     description: "Floor Plan is the most popular service enrolled by photographers is used to create a plans of the property. Our expert team can create a 2D/3D floor plan for you based on the rough sketch and detailed measurements.",
     buttons: [
-      { title: "Learn How Can We Help You", url: "#" }
+      { title: "Learn How Can We Help You", url: "#floor-services" }
     ],
     images: [
       { src: new URL('@/assets/images/Real-Estate-Architechture_Retouching-Corrected-1.jpg', import.meta.url).href, alt: "Real Estate Image 1" },
@@ -41,7 +41,7 @@ function FloorPlanView() {
           {/* Pass the custom content as props to Header83 */}
           <Header83 {...headerContent} />
         </section>
-        <section>
+        <section id="floor-services">
           <FloorPlan />
         </section>
       </main>

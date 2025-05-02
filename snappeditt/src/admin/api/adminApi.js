@@ -121,11 +121,23 @@ export const changeAdminPassword = async (passwordData) => {
 };
 
 // Admin Management (Super Admin only)
-export const getAllAdmins = async () => {
+export const getAllAdmins = async (page = 1, limit = 10, search = "") => {
   try {
-    const response = await fetch(`${API_URL}/admins`, {
-      credentials: "include",
+    const queryParams = new URLSearchParams({
+      page,
+      limit,
     });
+
+    if (search) {
+      queryParams.append("search", search);
+    }
+
+    const response = await fetch(
+      `${API_URL}/admins?${queryParams.toString()}`,
+      {
+        credentials: "include",
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch admins");
