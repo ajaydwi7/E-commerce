@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const helmet = require("helmet");
 const routes = require("./routes/apis");
 const setupRefundRetries = require("./utils/refundRetry");
 const paymentRoutes = require("./routes/paymentRoutes");
@@ -25,6 +26,8 @@ const _dirname = path.resolve();
 
 console.log("PORT:", process.env.PORT);
 app.use(cookieParser());
+
+app.use(helmet());
 // connect to mongodb
 
 mongoose
@@ -62,25 +65,6 @@ app.use(
   })
 );
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     allowedHeaders: "Content-Type,Authorization",
-//     exposedHeaders: ["Set-Cookie"],
-//   })
-// );
-
-// // To handle preflight (OPTIONS) requests properly
-// app.options("*", cors());
-// initialize middleware
 app.use(bodyParser.json());
 
 // Middleware
